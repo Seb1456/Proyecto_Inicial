@@ -1,4 +1,5 @@
 import java.util.*;
+import javax.swing.JOptionPane;
 /**
  * Class Tower
  * 
@@ -12,12 +13,15 @@ public class Tower {
 
     private int width;
     private int maxHeight;
+    private int alturaMaxTorrePixels;
     private boolean visible;
     private Rectangle leftSide;
     private Rectangle baseLine;
     private ArrayList<Rectangle> heightMarks;
 
     private Stack<Cup> cups;
+    private int alturaTotalPixelsCups = 0;
+    private int alturaProyeccion;
     private Stack<Lid> lids;
     private boolean ok;
 
@@ -81,19 +85,56 @@ public class Tower {
 
     public void pushCup(int n) {
         ok = false;
-
+        for(Cup c: cups){
+            if(c.getNumber() == n){
+                if(visible){
+                    JOptionPane.showMessageDialog(null, "Ya existe una copa con el número " + n + " en la torre.", "No se puede añadir",
+                    JOptionPane.ERROR_MESSAGE);
+                    ok = false;
+                    return;
+                }
+                ok = false;
+                return;
+            }
+        }
         Cup c = new Cup(n);
+        int cAltura = c.getHeight();
+        int alturaProyeccion = alturaTotalPixelsCups + cAltura;
+        int alturaMaxTorrePixels = maxHeight * 40;
+        if (alturaProyeccion > alturaMaxTorrePixels){
+            if(visible){
+                JOptionPane.showMessageDialog(null, "La altura de las copas superan la altura de la torre", 
+                "No se puede añadir una copa más.",
+                JOptionPane.ERROR_MESSAGE);
+                ok = false;
+                return;
+            }
+            ok = false;
+            return;
+        }
         cups.push(c);
         reorganize();
-        if (visible) c.makeVisible();
+        if (visible) c.makeVisible();    
         ok = true;
+        alturaTotalPixelsCups = alturaProyeccion;
     }
     
     public void popCup() {
         ok = false;
 
-        if (cups.isEmpty()) return;
+        if (cups.isEmpty()){
+            if(visible){
+                JOptionPane.showMessageDialog(null, "No es posible hacer pop cuando no hay copas.", 
+                "No hay copas en la torre.",
+                JOptionPane.ERROR_MESSAGE);
+                ok = false;
+                return;
+            }
+            ok = false;
+            return;
+        }
         Cup c = cups.pop();
+        alturaTotalPixelsCups -= c.getHeight();
         c.makeInvisible();
         reorganize();
         
@@ -111,11 +152,12 @@ public class Tower {
             if (c.getNumber() == n) {
                 c.makeInvisible();
                 found = true;
+                alturaTotalPixelsCups -= c.getHeight();
                 break;
             }
             temp.push(c);
         }
-
+        
         while (!temp.isEmpty()) {
             cups.push(temp.pop());
         }
@@ -126,7 +168,14 @@ public class Tower {
     
     public void pushLid(int n) {
         ok = false;
-
+        for(Lid l: lids){
+            if(l.getNumber() == n){
+                JOptionPane.showMessageDialog(null, "Ya existe una tapa con el número " + n + " en la torre.", "No se puede añadir",
+                JOptionPane.ERROR_MESSAGE);
+                ok = false;
+                return;
+            }
+        }
         Lid l = new Lid(n);
         lids.push(l);
         reorganize();
@@ -137,7 +186,17 @@ public class Tower {
     public void popLid() {
         ok = false;
 
-        if (lids.isEmpty()) return;
+        if (lids.isEmpty()){
+            if(visible){
+                JOptionPane.showMessageDialog(null, "No es posible hacer pop cuando no hay tapas.", 
+                "No hay tapas en la torre.",
+                JOptionPane.ERROR_MESSAGE);
+                ok = false;
+                return;
+            }
+            ok = false;
+            return;
+        }
         Lid l = lids.pop();
         l.makeInvisible();
         reorganize();
@@ -170,7 +229,7 @@ public class Tower {
         ok = found;
     }
 
-    public void orderTower() {
+    public void reverseTower() {
 
         ok = false;
 
@@ -183,7 +242,7 @@ public class Tower {
         ok = true;
     }
 
-    public void reverseTower() {
+    public void orderTower() {
 
         ok = false;
 
@@ -237,7 +296,15 @@ public class Tower {
             }
         }
     }
-
+    
+    public int height(){
+        int alturaTotal = 0;
+        for(Cup c: cups){ 
+            alturaTotal += c.getHeightCm();
+        }
+        return alturaTotal;
+    }
+    
     public void makeVisible() {
         visible = true;
         for (Cup c : cups) c.makeVisible();
@@ -246,6 +313,7 @@ public class Tower {
     public void makeInvisible() {
         visible = false;
         for (Cup c : cups) c.makeInvisible();
+        
     }
 
     public boolean ok() {

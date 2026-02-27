@@ -17,8 +17,9 @@ public class Cup {
     private Rectangle rightWall;
     private Rectangle base;
     private Lid lid;
+    protected boolean exists;
 
-    
+    private int sizeCm;
     private int cupHeight;
     private int cupWidth;
     private static final int PIXELES_POR_CM = 20;
@@ -26,9 +27,10 @@ public class Cup {
     public Cup(int number) {
         this.number = number;
         this.color = assignColor(number);
-        int sizeCm = 2 * number - 1;
+        this.sizeCm = 2 * number - 1;
         this.cupWidth = sizeCm * PIXELES_POR_CM;
         this.cupHeight = sizeCm * PIXELES_POR_CM;
+        this.exists = true;
         
         xPos = 0;
         yPos = 0;
@@ -116,7 +118,7 @@ public class Cup {
         rightWall.makeVisible();
         base.makeVisible();
     }
-
+    
     public void makeInvisible() {
         leftWall.makeInvisible();
         rightWall.makeInvisible();
@@ -129,6 +131,10 @@ public class Cup {
 
     public int getHeight() {
         return cupHeight;
+    }
+    
+    public int getHeightCm(){
+        return sizeCm;
     }
     
     public int getWidth(){
