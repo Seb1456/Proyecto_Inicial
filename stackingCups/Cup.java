@@ -144,4 +144,8 @@ public class Cup {
     public Lid getLid() {
         return lid;
     }
+    
+    public void setLid(Lid l) { 
+        this.lid = l; 
+    }
 }

@@ -18,8 +18,8 @@ public class Tower {
     private Rectangle leftSide;
     private Rectangle baseLine;
     private ArrayList<Rectangle> heightMarks;
-
-    private Stack<Cup> cups;
+    private static final int PIXELES_POR_CM = 20;
+    protected Stack<Cup> cups;
     private int alturaTotalPixelsCups = 0;
     private int alturaProyeccion;
     private Stack<Lid> lids;
@@ -80,6 +80,73 @@ public class Tower {
             for (Rectangle r : heightMarks) {
                 r.makeVisible();
             }
+        }
+    }
+    
+    public Tower(int cups) {
+        if(cups < 1){
+            cups = 1;
+        }
+        
+        int cupsNumber = cups;
+        
+        int sizeCm = 2 * cupsNumber - 1;             
+        int cupWidthPixels  = sizeCm * PIXELES_POR_CM;    
+        int cupHeightPixels = sizeCm * PIXELES_POR_CM;
+        this.width     = cupsNumber + 2;         
+        this.maxHeight = sizeCm * cups;        
+        this.visible = true;
+        this.cups = new Stack<>();
+        this.lids = new Stack<>();
+        this.ok = true;
+        baseX = -35;
+        baseY = 450;
+    
+        leftSide = new Rectangle();
+        baseLine = new Rectangle();
+        heightMarks = new ArrayList<>();
+
+        int towerHeightPixels = maxHeight * 40;
+        int towerWidthPixels  = width * 40;
+    
+        // Pared izquierda
+        leftSide.changeSize(towerHeightPixels, 5);
+        leftSide.moveHorizontal(baseX);
+        leftSide.moveVertical(baseY - towerHeightPixels);
+        leftSide.changeColor("black");
+    
+        // Base
+        baseLine.changeSize(5, towerWidthPixels);
+        baseLine.moveHorizontal(baseX);
+        baseLine.moveVertical(baseY);
+        baseLine.changeColor("black");
+    
+        // Marcas de altura 
+        for (int i = 1; i <= maxHeight; i++) {
+            
+            Rectangle mark = new Rectangle();
+            mark.changeSize(2, 15);
+            mark.changeColor("black");
+            
+            int markY = baseY - (i * 40);
+            
+            mark.moveHorizontal(baseX - 15);
+            mark.moveVertical(markY);
+            
+            heightMarks.add(mark);
+        }
+    
+        if (visible) {
+            leftSide.makeVisible();
+            baseLine.makeVisible();
+            
+            for (Rectangle r : heightMarks) {
+                r.makeVisible();
+            }
+        }
+        
+        for (int i = 1; i <= cups; i++) {
+            pushCup(i);
         }
     }
 
@@ -170,17 +237,35 @@ public class Tower {
         ok = false;
         for(Lid l: lids){
             if(l.getNumber() == n){
-                JOptionPane.showMessageDialog(null, "Ya existe una tapa con el número " + n + " en la torre.", "No se puede añadir",
-                JOptionPane.ERROR_MESSAGE);
+                if(visible){
+                    JOptionPane.showMessageDialog(null, "Ya existe una tapa con el número " + n + " en la torre.", "No se puede añadir",
+                    JOptionPane.ERROR_MESSAGE);
+                    ok = false;
+                    return;
+                }
                 ok = false;
                 return;
             }
         }
-        Lid l = new Lid(n);
-        lids.push(l);
-        reorganize();
-        if (visible) l.makeVisible();
-        ok = true;
+        
+        Cup objLid = null;
+            for (Cup c : cups) {
+                if (c.getNumber() == n) {
+                    objLid = c;
+                    break;
+                }
+            }
+        
+            if (objLid == null) {
+                ok = false;
+                return;
+            }
+            Lid l = new Lid(n);
+            objLid.setLid(l); 
+            lids.push(l);
+            reorganize();
+            if (visible) l.makeVisible();
+            ok = true;
     }
     
     public void popLid() {
@@ -198,12 +283,18 @@ public class Tower {
             return;
         }
         Lid l = lids.pop();
+        
+        for (Cup c : cups) {
+            if (c.getLid() != null && c.getLid().getNumber() == l.getNumber()) {
+                c.setLid(null);     
+            break;
+            }
+        }
         l.makeInvisible();
         reorganize();
         
         ok = true;
     }
-    
     
     public void removeLid(int n) {
 
@@ -297,6 +388,56 @@ public class Tower {
         }
     }
     
+    public int lidedCups() {
+        int count = 0;
+        for (Cup cup : cups) {
+            if (cup.getLid() != null) {
+                count++;
+            }
+        }
+        return count;
+    }   
+    
+    public String[][] stackingItems() {
+        List<String[]> items = new ArrayList<>();
+        
+        Stack<Cup> temp = new Stack<>();
+        while (!cups.isEmpty()) {
+            temp.push(cups.pop());
+        }
+    
+        while (!temp.isEmpty()) {
+            Cup cup = temp.pop();
+            items.add(new String[]{"cup", String.valueOf(cup.getNumber())});
+    
+            if (cup.getLid() != null) {
+                items.add(new String[]{"lid", String.valueOf(cup.getLid().getNumber())});
+            }
+            cups.push(cup);
+        }
+
+        String[][] result = new String[items.size()][2];
+        for (int i = 0; i < items.size(); i++) {
+            result[i] = items.get(i);
+        }
+        return result;
+    }
+    
+    public void cover(){
+        ok = false;
+        for(Cup c : cups){
+            if(c.getLid() == null){
+                pushLid(c.getNumber());
+            }
+        }
+        reorganize();
+        ok = true;
+    }
+    
+    public void swap(String[] o1, String[] o2){
+        
+    }
+    
     public int height(){
         int alturaTotal = 0;
         for(Cup c: cups){ 
@@ -308,12 +449,13 @@ public class Tower {
     public void makeVisible() {
         visible = true;
         for (Cup c : cups) c.makeVisible();
+        for (Lid l : lids) l.makeVisible();
     }
 
     public void makeInvisible() {
         visible = false;
         for (Cup c : cups) c.makeInvisible();
-        
+        for (Lid l : lids) l.makeInvisible();
     }
 
     public boolean ok() {

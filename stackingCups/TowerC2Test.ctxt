@@ -1,0 +1,11 @@
+#BlueJ class context
+comment0.target=TowerC2Test
+comment1.params=
+comment1.target=void\ setUp()
+comment2.params=
+comment2.target=void\ shouldCoverAllCupsWithoutLid()
+comment3.params=
+comment3.target=void\ shouldNotCoverCupsThatAlreadyHaveLid()
+comment4.params=t\ number
+comment4.target=Cup\ getCupByNumber(Tower,\ int)
+numComments=5
