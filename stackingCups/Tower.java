@@ -14,6 +14,7 @@ public class Tower {
     private int width;
     private int maxHeight;
     private int alturaMaxTorrePixels;
+    private int maxCups;
     private boolean visible;
     private Rectangle leftSide;
     private Rectangle baseLine;
@@ -24,7 +25,7 @@ public class Tower {
     private int alturaProyeccion;
     private Stack<Lid> lids;
     private boolean ok;
-
+    
     private int baseX = 120;
     private int baseY = 260;
 
@@ -35,6 +36,7 @@ public class Tower {
         this.visible = true;
         this.cups = new Stack<>();
         this.lids = new Stack<>();
+        this.maxCups = -1;
         this.ok = true;
         baseX = -35;
         baseY = 450;
@@ -98,6 +100,7 @@ public class Tower {
         this.visible = true;
         this.cups = new Stack<>();
         this.lids = new Stack<>();
+        this.maxCups = maxCups;
         this.ok = true;
         baseX = -35;
         baseY = 450;
@@ -179,6 +182,16 @@ public class Tower {
             ok = false;
             return;
         }
+        
+        if (maxCups != -1 && cups.size() >= maxCups) {
+            if (visible) {
+                JOptionPane.showMessageDialog(null,
+                    "Esta torre solo admite " + maxCups + " copa(s).",
+                    "Límite alcanzado",
+                    JOptionPane.ERROR_MESSAGE);
+            }
+            return;
+        }
         cups.push(c);
         reorganize();
         if (visible) c.makeVisible();    
@@ -248,7 +261,7 @@ public class Tower {
             }
         }
         
-        Cup objLid = null;
+        /*Cup objLid = null;
             for (Cup c : cups) {
                 if (c.getNumber() == n) {
                     objLid = c;
@@ -260,8 +273,9 @@ public class Tower {
                 ok = false;
                 return;
             }
+            */
             Lid l = new Lid(n);
-            objLid.setLid(l); 
+            /* objLid.setLid(l); */ 
             lids.push(l);
             reorganize();
             if (visible) l.makeVisible();
