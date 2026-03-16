@@ -16,7 +16,6 @@ public class Cup {
     private Rectangle leftWall;
     private Rectangle rightWall;
     private Rectangle base;
-    private Lid lid;
     protected boolean exists;
 
     private int sizeCm;
@@ -71,11 +70,6 @@ public class Cup {
         }
     }
     
-    public void addLid(){
-        if(lid == null){
-            lid = new Lid(this.number);
-        }
-    }
     
     public void draw(int x, int y) {
     
@@ -96,15 +90,8 @@ public class Cup {
         // Base
         base.moveHorizontal(dx);
         base.moveVertical(dy);
-        
-        if (lid != null) {
-            int tapaX = x + (getWidth() / 2) - (lid.getWidth() / 2);
-            int tapaY = y;
-            lid.draw(tapaX, tapaY);
-        }
-
-    }
-
+    }   
+       
     public void moveVertical(int distance) {
         yPos += distance;
 
@@ -141,11 +128,4 @@ public class Cup {
         return cupWidth;
     }
 
-    public Lid getLid() {
-        return lid;
-    }
-    
-    public void setLid(Lid l) { 
-        this.lid = l; 
-    }
 }
