@@ -545,12 +545,14 @@ public class Tower {
         for (Cup c : cups) {
             boolean hasLid = false;
             for (Lid l : lids) {
-                if (l.getNumber() == c.getNumber()) { hasLid = true; break; }
+                if (l.getNumber() == c.getNumber()) { 
+                    hasLid = true; break; 
+                }
             }
             if (!hasLid) pushLid(c.getNumber());
             lidsAsignadas.add(c.getNumber());
         }
-        reorganize1();
+        reorganize();
         ok = true;
     }
 
@@ -594,11 +596,39 @@ public class Tower {
         String[] mejorO1   = null;
         String[] mejorO2   = null;
         int mejorReduccion = 0;
+        boolean wasVisible = this.visible;
+        this.visible = false;
+    
+        List<Cup> cupList = new ArrayList<>(cups);
+    
         for (int i = 0; i < items.length; i++) {
+            if (!items[i][0].equals("cup")) {
+                continue;
+            }
+            
             for (int j = i + 1; j < items.length; j++) {
-                swap(items[i], items[j]);
+                if (!items[j][0].equals("cup")) {
+                    continue;
+                }
+                int numI = Integer.parseInt(items[i][1]);
+                int numJ = Integer.parseInt(items[j][1]);
+                int idxI = -1, idxJ = -1;
+                for (int k = 0; k < cupList.size(); k++) {
+                    if (cupList.get(k).getNumber() == numI) idxI = k;
+                    if (cupList.get(k).getNumber() == numJ) idxJ = k;
+                }
+                if (idxI == -1 || idxJ == -1) {
+                    continue;
+                }
+                Cup temp = cupList.get(idxI);
+                cupList.set(idxI, cupList.get(idxJ));
+                cupList.set(idxJ, temp);
+                cups.clear(); cups.addAll(cupList);
                 int reduccion = alturaActual - heightVisual();
-                swap(items[j], items[i]);
+                temp = cupList.get(idxI);
+                cupList.set(idxI, cupList.get(idxJ));
+                cupList.set(idxJ, temp);
+                cups.clear(); cups.addAll(cupList);
                 if (reduccion > mejorReduccion) {
                     mejorReduccion = reduccion;
                     mejorO1 = items[i];
@@ -606,6 +636,7 @@ public class Tower {
                 }
             }
         }
+        this.visible = wasVisible;
         return mejorO1 != null ? new String[][]{ mejorO1, mejorO2 } : null;
     }
 
@@ -628,7 +659,7 @@ public class Tower {
         list.set(idx2, temp);
         cups.clear();
         cups.addAll(list);
-        if (tieneTapa(num1) || tieneTapa(num2)) reorganize();
+        if (lidsAsignadas.contains(num1) || lidsAsignadas.contains(num2)) reorganize();
         else reorganize1();
         ok = true;
     }
@@ -652,7 +683,7 @@ public class Tower {
         list.set(idx2, temp);
         lids.clear();
         lids.addAll(list);
-        if (tieneTapa(num1) || tieneTapa(num2)) reorganize();
+        if (lidsAsignadas.contains(num1) || lidsAsignadas.contains(num2)) reorganize();
         else reorganize1();
         ok = true;
     }
@@ -695,7 +726,7 @@ public class Tower {
         lids.clear();
         lids.addAll(lidList);
         alturaTotalPixelsCups += alturaExtra;
-        if (tieneTapa(cupNum)) reorganize();
+        if (lidsAsignadas.contains(cupNum)) reorganize();
         else reorganize1();
         ok = true;
     }
@@ -721,27 +752,34 @@ public class Tower {
      * @return altura visual real en cm
      */
     public int heightVisual() {
-        List<Cup> list = new ArrayList<>(cups);
-        int[] topPos   = new int[list.size()];
-        int maxTop     = 0;
+        List<Cup> list     = new ArrayList<>(cups);
+        int[] bottomPos    = new int[list.size()];
+        int[] espacioUsado = new int[list.size()];
+        int maxTop         = 0;
+        int stackingBottom = 0;
     
         for (int i = 0; i < list.size(); i++) {
-            Cup c   = list.get(i);
-            int bottom;
+            Cup c = list.get(i);
+            boolean nested = false;
     
-            if (i == 0) {
-                bottom = 0;
-            } else {
-                Cup prev = list.get(i - 1);
-                if (c.getNumber() < prev.getNumber()) {
-                    bottom = (topPos[i-1] - prev.getHeightCm()) + 1;
-                } else {
-                    bottom = topPos[i - 1];
+            for (int j = i - 1; j >= 0; j--) {
+                Cup candidate = list.get(j);
+                
+                if (c.getNumber() < candidate.getNumber()) {
+                    bottomPos[i] = bottomPos[j] + 1 + espacioUsado[j];
+                    espacioUsado[j] += c.getHeightCm();
+                    nested = true;
+                    break;
                 }
             }
     
-            topPos[i] = bottom + c.getHeightCm();
-            if (topPos[i] > maxTop) maxTop = topPos[i];
+            if (!nested) {
+                bottomPos[i] = stackingBottom;
+                stackingBottom += c.getHeightCm();
+            }
+    
+            int top = bottomPos[i] + c.getHeightCm();
+            if (top > maxTop) maxTop = top;
         }
     
         return maxTop;
