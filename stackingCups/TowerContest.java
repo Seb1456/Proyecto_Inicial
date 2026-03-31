@@ -23,10 +23,13 @@ public class TowerContest {
      *         separadas por espacio. Retorna "impossible" si no existe solución.
      */
     public String solve(int n, int h) {
-        int[] perm      = new int[n];
+        int[] perm = new int[n];
         boolean[] usado = new boolean[n + 1];
-        int[] resultado = buscar(perm, usado, 0, n, h);
+    
+        int[] resultado = buscar(perm, usado, 0, n, h, 0);
+    
         if (resultado == null) return "impossible";
+    
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < resultado.length; i++) {
             if (i > 0) sb.append(" ");
@@ -44,17 +47,22 @@ public class TowerContest {
      * @param h altura objetivo en cm
      */
     public void simulate(int n, int h) {
-        int[] perm      = new int[n];
-        boolean[] usado = new boolean[n + 1];
-        int[] orden     = buscar(perm, usado, 0, n, h);
-        if (orden == null) {
+        String solucion = solve(n, h);
+        if (solucion.equals("impossible")) {
             JOptionPane.showMessageDialog(null,
                 "impossible", "Sin solución",
                 JOptionPane.ERROR_MESSAGE);
             return;
         }
-        Tower tower = new Tower(n + 2, h);
-        for (int num : orden) tower.pushCup(num);
+        int maxHeight = n * n;
+        Tower tower = new Tower(n + 2, maxHeight);
+        String[] parts = solucion.split(" ");
+    
+        for (String p : parts) {
+            int size = Integer.parseInt(p);
+            int num = (size + 1) / 2; 
+            tower.pushCup(num);
+        }
     }
 
     /**
@@ -68,23 +76,35 @@ public class TowerContest {
      * @param h       altura objetivo en cm
      * @return arreglo con la permutación válida encontrada, o null si no existe
      */
-    private int[] buscar(int[] perm, boolean[] usado, int pos, int n, int h) {
+    private int[] buscar(int[] perm, boolean[] usado, int pos, int n, int h, int alturaActual) {
+
+        if (alturaActual > h) return null;
         if (pos == n) {
-            Tower t = new Tower(n + 2, h);
-            t.makeInvisible();
-            for (int num : perm) t.pushCup(num);
-            if (t.heightVisual() == h) return perm.clone();
+            if (alturaActual == h) return perm.clone();
             return null;
         }
-        for (int i = 1; i <= n; i++) {
+    
+        for (int i = n; i >= 1; i--) {
             if (!usado[i]) {
-                usado[i]  = true;
+                usado[i] = true;
                 perm[pos] = i;
-                int[] res = buscar(perm, usado, pos + 1, n, h);
+                boolean nested = false;
+                for (int j = pos - 1; j >= 0; j--) {
+                    if (perm[j] > i) {
+                        nested = true;
+                        break;
+                    }
+                }
+                int alturaNueva = alturaActual;
+                if (!nested) {
+                    alturaNueva += (2 * i - 1);
+                }
+                int[] res = buscar(perm, usado, pos + 1, n, h, alturaNueva);
                 if (res != null) return res;
-                usado[i]  = false;
+                usado[i] = false;
             }
         }
+    
         return null;
     }
 }

@@ -660,7 +660,7 @@ public class Tower {
         cups.clear();
         cups.addAll(list);
         if (lidsAsignadas.contains(num1) || lidsAsignadas.contains(num2)) reorganize();
-        else reorganize1();
+        else reorganize();
         ok = true;
     }
 
@@ -684,7 +684,7 @@ public class Tower {
         lids.clear();
         lids.addAll(list);
         if (lidsAsignadas.contains(num1) || lidsAsignadas.contains(num2)) reorganize();
-        else reorganize1();
+        else reorganize();
         ok = true;
     }
 
@@ -727,7 +727,7 @@ public class Tower {
         lids.addAll(lidList);
         alturaTotalPixelsCups += alturaExtra;
         if (lidsAsignadas.contains(cupNum)) reorganize();
-        else reorganize1();
+        else reorganize();
         ok = true;
     }
 
