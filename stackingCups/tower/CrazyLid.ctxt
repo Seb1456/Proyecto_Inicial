@@ -1,0 +1,13 @@
+#BlueJ class context
+comment0.target=CrazyLid
+comment0.text=\r\n\ Tapa\ Crazy\:\ en\ lugar\ de\ ubicarse\ en\ el\ tope\ de\ su\ taza,\ se\ ubica\ en\ la\ base\ de\ ella.\r\n\r\n\ @author\ Paula\ D\u00EDaz\r\n\ @author\ Sebastian\ Granados\r\n\ @version\ 2\r\n
+comment1.params=number
+comment1.target=CrazyLid(int)
+comment1.text=\r\n\ Crea\ una\ tapa\ Crazy\ con\ el\ n\u00FAmero\ identificador\ dado.\r\n\r\n\ @param\ number\ n\u00FAmero\ identificador\ de\ la\ tapa\r\n
+comment2.params=n
+comment2.target=java.lang.String\ assignColor(int)
+comment2.text=\r\n\ Retorna\ un\ color\ vivo\ aleatorio\ para\ distinguir\ visualmente\r\n\ esta\ tapa\ de\ los\ dem\u00E1s\ tipos.\r\n\r\n\ @param\ n\ n\u00FAmero\ de\ la\ tapa\ (no\ utilizado)\r\n\ @return\ nombre\ de\ un\ color\ vivo\ elegido\ al\ azar\r\n
+comment3.params=cup
+comment3.target=int\ getDrawYOffset(Cup)
+comment3.text=\r\n\ Retorna\ el\ desplazamiento\ vertical\ para\ dibujarse\ en\ la\ base\ de\ su\ taza\r\n\ en\ lugar\ del\ tope.\ El\ valor\ desplaza\ la\ tapa\ hacia\ abajo\ hasta\ la\ base.\r\n\r\n\ @param\ cup\ la\ copa\ a\ la\ que\ est\u00E1\ asignada\ esta\ tapa\r\n\ @return\ desplazamiento\ en\ p\u00EDxeles\ para\ ubicarse\ en\ la\ base\ de\ la\ copa\r\n
+numComments=4
