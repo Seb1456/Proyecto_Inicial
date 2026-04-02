@@ -29,6 +29,7 @@ public class Tower {
     private int alturaProyeccion;
     protected Stack<Lid> lids;
     Set<Integer> lidsAsignadas = new HashSet<>();
+    private List<StackItem> pushOrder;
     private boolean ok;
 
     private int baseX = 120;
@@ -46,6 +47,7 @@ public class Tower {
         this.visible = true;
         this.cups = new Stack<>();
         this.lids = new Stack<>();
+        this.pushOrder = new ArrayList<>();
         this.maxCups = -1;
         this.ok = true;
         baseX = -35;
@@ -104,6 +106,7 @@ public class Tower {
         this.heightMarks = base.heightMarks;
         this.cups = new Stack<>();
         this.lids = new Stack<>();
+        this.pushOrder = new ArrayList<>();
         this.ok = true;
         baseX = -35;
         baseY = 450;
@@ -148,14 +151,8 @@ public class Tower {
                 "Límite alcanzado", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        for (Lid l : lids) {
-            if (!lidsAsignadas.contains(l.getNumber())) {
-                if (l.getWidth() < c.getWidth() && l.getHeight() <= c.getHeight()) {
-                    alturaTotalPixelsCups -= l.getHeight();
-                }
-            }
-        }
         cups.push(c);
+        pushOrder.add(c);
         c.onPushed(this);
         reorganize1();
         if (visible) c.makeVisible();
@@ -202,14 +199,8 @@ public class Tower {
                 "Límite alcanzado", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        for (Lid l : lids) {
-            if (!lidsAsignadas.contains(l.getNumber())) {
-                if (l.getWidth() < c.getWidth() && l.getHeight() <= c.getHeight()) {
-                    alturaTotalPixelsCups -= l.getHeight();
-                }
-            }
-        }
         cups.push(c);
+        pushOrder.add(c);
         c.onPushed(this);
         reorganize1();
         if (visible) c.makeVisible();
@@ -237,6 +228,7 @@ public class Tower {
             return;
         }
         cups.pop();
+        pushOrder.remove(c);
         alturaTotalPixelsCups -= c.getHeight();
         c.makeInvisible();
         checkLidExistence();
@@ -280,6 +272,7 @@ public class Tower {
             temp.push(c);
         }
         while (!temp.isEmpty()) cups.push(temp.pop());
+        pushOrder.remove(targetCup);
         checkLidExistence();
         reorganize1();
         ok = true;
@@ -325,7 +318,7 @@ public class Tower {
             alturaTotalPixelsCups += nueva.getHeight();
         }
         lids.push(nueva);
-        alturaTotalPixelsCups += nueva.getHeight();
+        pushOrder.add(nueva);
         if (visible) nueva.makeVisible();
         reorganize1();
         ok = true;
@@ -379,7 +372,7 @@ public class Tower {
             alturaTotalPixelsCups += nueva.getHeight();
         }
         lids.push(nueva);
-        alturaTotalPixelsCups += nueva.getHeight();
+        pushOrder.add(nueva);
         if (visible) nueva.makeVisible();
         reorganize1();
         ok = true;
@@ -405,6 +398,7 @@ public class Tower {
             return;
         }
         lids.pop();
+        pushOrder.remove(l);
         alturaTotalPixelsCups -= l.getHeight();
         lidsAsignadas.remove(l.getNumber());
         l.makeInvisible();
@@ -436,6 +430,7 @@ public class Tower {
                 }
                 alturaLid = l.getHeight();
                 l.makeInvisible();
+                pushOrder.remove(l);
                 found = true;
                 break;
             }
@@ -459,6 +454,7 @@ public class Tower {
         Collections.sort(list, Comparator.comparingInt(Cup::getNumber));
         cups.clear();
         cups.addAll(list);
+        rebuildCupOrderInPushOrder(list);
         reorganize1();
         ok = true;
     }
@@ -469,6 +465,7 @@ public class Tower {
     public void orderTower() {
         ok = false;
         Collections.reverse(cups);
+        rebuildCupOrderInPushOrder(new ArrayList<>(cups));
         reorganize1();
         ok = true;
     }
@@ -506,64 +503,63 @@ public class Tower {
     /**
      * Reorganiza visualmente usando greedy look-back.
      */
-    void reorganize1() {
-        List<Cup> list = new ArrayList<>(cups);
-        int[] drawnX   = new int[list.size()];
-        int[] drawnY   = new int[list.size()];
-        posicionarCopas(list, drawnX, drawnY);
-        posicionarTapas(list, drawnX, drawnY);
-        posicionarTapasIndependientes(list, drawnX, drawnY);
-    }
-
     /**
-     * Posiciona todas las copas usando greedy look-back.
+     * Reorganiza visualmente usando greedy look-back unificado para copas y tapas.
+     * Los elementos se posicionan en el orden en que fueron apilados (pushOrder).
+     * Solo las copas actúan como contenedores; las tapas asignadas se dibujan
+     * encima de su copa mediante posicionarTapas.
      */
-    private void posicionarCopas(List<Cup> list, int[] drawnX, int[] drawnY) {
-        int centroTorreX   = baseX + (width * 40) / 2;
-        int[] espacioUsado = new int[list.size()];
-        int alturaLidsIndependientes = 0;
-        for (Lid l : lids) {
-            if (!lidsAsignadas.contains(l.getNumber()))
-                alturaLidsIndependientes += l.getHeight();
-        }
-        int stackingY = baseY - alturaLidsIndependientes;
-        for (int i = 0; i < list.size(); i++) {
-            Cup c = list.get(i);
+    void reorganize1() {
+        int centroTorreX = baseX + (width * 40) / 2;
+        int n = pushOrder.size();
+        int[] drawnX       = new int[n];
+        int[] drawnY       = new int[n];
+        int[] espacioUsado = new int[n];
+        int stackingY = baseY;
+        for (int i = 0; i < n; i++) {
+            StackItem item = pushOrder.get(i);
+            if (!item.isContainer() && lidsAsignadas.contains(item.getNumber())) continue;
+            int iW   = item.getWidth();
+            int iH   = item.getHeight();
+            int sink = item.lidTheCup();
             boolean nested = false;
             for (int j = i - 1; j >= 0; j--) {
-                Cup candidate    = list.get(j);
-                int espacioLibre = candidate.getHeight() - espacioUsado[j];
-                if (c.getWidth() < candidate.getWidth() && c.getHeight() <= espacioLibre) {
-                    drawnX[i] = drawnX[j] + (candidate.getWidth() - c.getWidth()) / 2;
-                    drawnY[i] = drawnY[j] + candidate.getHeight() - espacioUsado[j] - c.getHeight();
-                    espacioUsado[j] += c.getHeight();
+                StackItem candidate = pushOrder.get(j);
+                if (!candidate.isContainer()) continue;
+                int libre = candidate.getHeight() - espacioUsado[j];
+                if (iW < candidate.getWidth() && iH <= libre) {
+                    drawnX[i] = drawnX[j] + (candidate.getWidth() - iW) / 2;
+                    drawnY[i] = drawnY[j] + candidate.getHeight() - espacioUsado[j] - iH + sink;
+                    espacioUsado[j] += iH;
                     nested = true;
                     break;
                 }
             }
             if (!nested) {
-                drawnX[i] = centroTorreX - c.getWidth() / 2;
-                drawnY[i] = stackingY - c.getHeight();
+                drawnX[i] = centroTorreX - iW / 2;
+                drawnY[i] = stackingY - iH + sink;
                 stackingY = drawnY[i];
             }
-            c.draw(drawnX[i], drawnY[i]);
+            item.draw(drawnX[i], drawnY[i]);
         }
+        posicionarTapas(drawnX, drawnY);
     }
 
     /**
-     * Posiciona las tapas asignadas encima (o en la base, para CrazyLid) de su copa.
+     * Posiciona las tapas asignadas encima de su copa usando las posiciones
+     * calculadas por reorganize1.
      */
-    private void posicionarTapas(List<Cup> list, int[] drawnX, int[] drawnY) {
+    private void posicionarTapas(int[] drawnX, int[] drawnY) {
         int centroTorreX = baseX + (width * 40) / 2;
         int stackingY    = baseY;
         for (Lid l : lids) {
             if (!lidsAsignadas.contains(l.getNumber())) continue;
             boolean found = false;
-            for (int i = 0; i < list.size(); i++) {
-                Cup c = list.get(i);
-                if (c.getNumber() == l.getNumber()) {
-                    int yPos = drawnY[i] + l.getDrawYOffset(c);
-                    l.draw(drawnX[i] + (c.getWidth() - l.getWidth()) / 2, yPos);
+            for (int i = 0; i < pushOrder.size(); i++) {
+                StackItem item = pushOrder.get(i);
+                if (item.isContainer() && item.getNumber() == l.getNumber()) {
+                    int yPos = drawnY[i] + l.getDrawYOffset(item) + l.lidTheCup();
+                    l.draw(drawnX[i] + (item.getWidth() - l.getWidth()) / 2, yPos);
                     found = true;
                     break;
                 }
@@ -577,33 +573,22 @@ public class Tower {
         }
     }
 
-    /**
-     * Posiciona las tapas independientes (no asignadas con cover()).
-     */
-    private void posicionarTapasIndependientes(List<Cup> cupList, int[] cupDrawnX, int[] cupDrawnY) {
-        int centroTorreX = baseX + (width * 40) / 2;
-        int stackingY    = baseY;
-        List<Lid> lidList = new ArrayList<>(lids);
-        for (int i = 0; i < lidList.size(); i++) {
-            Lid l = lidList.get(i);
-            if (lidsAsignadas.contains(l.getNumber())) continue;
-            boolean nested = false;
-            for (int j = cupList.size() - 1; j >= 0; j--) {
-                Cup candidate = cupList.get(j);
-                if (l.getWidth() < candidate.getWidth() && l.getHeight() <= candidate.getHeight()) {
-                    int lidX = cupDrawnX[j] + (candidate.getWidth() - l.getWidth()) / 2;
-                    int lidY = cupDrawnY[j] + candidate.getHeight() - l.getHeight();
-                    l.draw(lidX, lidY);
-                    nested = true;
-                    break;
-                }
-            }
-            if (!nested) {
-                int lidX = centroTorreX - l.getWidth() / 2;
-                int lidY = stackingY - l.getHeight();
-                l.draw(lidX, lidY);
-                stackingY = lidY;
-            }
+    /** Intercambia dos elementos en pushOrder por referencia. */
+    private void swapInPushOrder(StackItem a, StackItem b) {
+        int ia = pushOrder.indexOf(a), ib = pushOrder.indexOf(b);
+        if (ia == -1 || ib == -1) return;
+        pushOrder.set(ia, b);
+        pushOrder.set(ib, a);
+    }
+
+    /** Reemplaza las entradas de copas en pushOrder con el nuevo orden dado. */
+    private void rebuildCupOrderInPushOrder(List<Cup> newOrder) {
+        List<Integer> pos = new ArrayList<>();
+        for (int i = 0; i < pushOrder.size(); i++) {
+            if (pushOrder.get(i).isContainer()) pos.add(i);
+        }
+        for (int i = 0; i < pos.size() && i < newOrder.size(); i++) {
+            pushOrder.set(pos.get(i), newOrder.get(i));
         }
     }
 
@@ -631,6 +616,7 @@ public class Tower {
                 lidsAsignadas.remove(l.getNumber());
                 alturaTotalPixelsCups -= l.getHeight();
                 l.makeInvisible();
+                pushOrder.remove(l);
             }
         }
     }
@@ -643,6 +629,7 @@ public class Tower {
         for (Lid l : lids) l.makeInvisible();
         lids.clear();
         lidsAsignadas.clear();
+        pushOrder.removeIf(item -> !item.isContainer());
         alturaTotalPixelsCups = 0;
         for (Cup c : cups) alturaTotalPixelsCups += c.getHeight();
         reorganize1();
@@ -801,11 +788,12 @@ public class Tower {
             if (list.get(i).getNumber() == num2) idx2 = i;
         }
         if (idx1 == -1 || idx2 == -1) return;
-        Cup temp = list.get(idx1);
-        list.set(idx1, list.get(idx2));
-        list.set(idx2, temp);
+        Cup c1 = list.get(idx1), c2 = list.get(idx2);
+        list.set(idx1, c2);
+        list.set(idx2, c1);
         cups.clear();
         cups.addAll(list);
+        swapInPushOrder(c1, c2);
         if (lidsAsignadas.contains(num1) || lidsAsignadas.contains(num2)) reorganize();
         else reorganize1();
         ok = true;
@@ -820,11 +808,12 @@ public class Tower {
             if (list.get(i).getNumber() == num2) idx2 = i;
         }
         if (idx1 == -1 || idx2 == -1) return;
-        Lid temp = list.get(idx1);
-        list.set(idx1, list.get(idx2));
-        list.set(idx2, temp);
+        Lid l1 = list.get(idx1), l2 = list.get(idx2);
+        list.set(idx1, l2);
+        list.set(idx2, l1);
         lids.clear();
         lids.addAll(list);
+        swapInPushOrder(l1, l2);
         if (lidsAsignadas.contains(num1) || lidsAsignadas.contains(num2)) reorganize();
         else reorganize1();
         ok = true;
@@ -860,6 +849,7 @@ public class Tower {
         cups.clear(); cups.addAll(cupList);
         lids.clear(); lids.addAll(lidList);
         alturaTotalPixelsCups += alturaExtra;
+        swapInPushOrder(targetCup, targetLid);
         if (lidsAsignadas.contains(cupNum)) reorganize();
         else reorganize1();
         ok = true;

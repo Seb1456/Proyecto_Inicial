@@ -16,7 +16,7 @@ import shapes.Rectangle;
  * @author Sebastian Granados
  * @version 2
  */
-public abstract class Lid {
+public abstract class Lid implements StackItem {
 
     private int number;
     private String color;
@@ -174,7 +174,19 @@ public abstract class Lid {
      * @param cup la copa a la que está asignada esta tapa
      * @return desplazamiento en píxeles hacia abajo desde el tope de la copa
      */
-    public int getDrawYOffset(Cup cup) {
+    public int getDrawYOffset(StackItem item) {
+        return 0;
+    }
+
+    /**
+     * Método gancho que retorna cuántos píxeles debe hundirse esta tapa
+     * dentro de la copa al dibujarse (tanto asignada como independiente).
+     * El valor 0 la coloca exactamente en el borde; un valor positivo la mete
+     * más adentro de la copa.
+     *
+     * @return desplazamiento de hundimiento en píxeles
+     */
+    public int lidTheCup() {
         return 0;
     }
 }

@@ -12,7 +12,7 @@ import shapes.Rectangle;
  * @author Sebastian Granados
  * @version 2
  */
-public abstract class Cup {
+public abstract class Cup implements StackItem {
 
     private int number;
     private int xPos;
@@ -193,6 +193,11 @@ public abstract class Cup {
      * @return true si la copa puede ser eliminada, false en caso contrario
      */
     public boolean canBeRemoved(Tower tower) {
+        return true;
+    }
+
+    @Override
+    public boolean isContainer() {
         return true;
     }
 }

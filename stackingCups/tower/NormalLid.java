@@ -18,4 +18,9 @@ public class NormalLid extends Lid {
     public NormalLid(int number) {
         super(number);
     }
+
+    @Override
+    public int lidTheCup() {
+        return getHeight() / 4;
+    }
 }

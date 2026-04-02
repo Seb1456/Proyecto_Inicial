@@ -38,7 +38,7 @@ public class CrazyLid extends Lid {
      * @return desplazamiento en píxeles para ubicarse en la base de la copa
      */
     @Override
-    public int getDrawYOffset(Cup cup) {
-        return cup.getHeight() - this.getHeight();
+    public int getDrawYOffset(StackItem item) {
+        return item.getHeight() - this.getHeight();
     }
 }

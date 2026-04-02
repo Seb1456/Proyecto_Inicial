@@ -4,4 +4,6 @@ comment0.text=\r\n\ Tapa\ normal\:\ comportamiento\ est\u00E1ndar\ sin\ modifica
 comment1.params=number
 comment1.target=NormalLid(int)
 comment1.text=\r\n\ Crea\ una\ tapa\ normal\ con\ el\ n\u00FAmero\ identificador\ dado.\r\n\r\n\ @param\ number\ n\u00FAmero\ identificador\ de\ la\ tapa\r\n
-numComments=2
+comment2.params=
+comment2.target=int\ lidTheCup()
+numComments=3
