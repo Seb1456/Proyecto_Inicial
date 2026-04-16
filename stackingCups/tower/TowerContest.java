@@ -26,23 +26,14 @@ public class TowerContest {
      *         separadas por espacio. Retorna "impossible" si no existe solución.
      */
     public String solve(int n, int h) {
-        int[] visible = findVisibleCups(n, h);
-        if (visible == null) {
-            return "impossible";
-        }
-        boolean[] isVisible = new boolean[n + 1];
-        for (int cup : visible) {
-            isVisible[cup] = true;
-        }
+        int[] perm    = new int[n];
+        boolean[] usado = new boolean[n + 1];
+        int[] resultado = buscar(perm, usado, 0, n, h, 0);
+        if (resultado == null) return "impossible";
         StringBuilder sb = new StringBuilder();
-        for (int cup : visible) {
-            if (sb.length() > 0) sb.append(" ");
-            sb.append(2 * cup - 1);
-        }
-        for (int i = 1; i <= n; i++) {
-            if (!isVisible[i]) {
-                sb.append(" ").append(2 * i - 1);
-            }
+        for (int i = 0; i < resultado.length; i++) {
+            if (i > 0) sb.append(" ");
+            sb.append(2 * resultado[i] - 1);
         }
         return sb.toString();
     }
@@ -70,6 +61,42 @@ public class TowerContest {
             int num  = (size + 1) / 2;
             tower.pushCup(num);
         }
+    }
+
+    /**
+     * Busca mediante backtracking una permutación de [1..n] tal que
+     * al apilar las copas en ese orden la altura visual sea exactamente h.
+     *
+     * @param perm        arreglo donde se construye la permutación actual
+     * @param usado       arreglo booleano que indica qué números ya están en perm
+     * @param pos         posición actual en la permutación
+     * @param n           número total de copas
+     * @param h           altura objetivo en cm
+     * @param alturaActual altura acumulada hasta la posición actual
+     * @return arreglo con la permutación válida encontrada, o null si no existe
+     */
+    private int[] buscar(int[] perm, boolean[] usado, int pos, int n, int h, int alturaActual) {
+        if (alturaActual > h) return null;
+        if (pos == n) {
+            if (alturaActual == h) return perm.clone();
+            return null;
+        }
+        for (int i = n; i >= 1; i--) {
+            if (!usado[i]) {
+                usado[i] = true;
+                perm[pos] = i;
+                boolean nested = false;
+                for (int j = pos - 1; j >= 0; j--) {
+                    if (perm[j] > i) { nested = true; break; }
+                }
+                int alturaNueva = alturaActual;
+                if (!nested) alturaNueva += (2 * i - 1);
+                int[] res = buscar(perm, usado, pos + 1, n, h, alturaNueva);
+                if (res != null) return res;
+                usado[i] = false;
+            }
+        }
+        return null;
     }
 
     /**
