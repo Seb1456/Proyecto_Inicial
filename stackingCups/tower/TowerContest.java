@@ -98,4 +98,82 @@ public class TowerContest {
         }
         return null;
     }
+
+    /**
+     * Determina greedy qué copas deben ser visibles (LR-máximos) para
+     * alcanzar exactamente la altura h con n copas.
+     *
+     * La copa n siempre es visible. Se buscan m copas adicionales de {1..n-1}
+     * cuyos índices sumen s = (r+m)/2, donde r = h-(2n-1).
+     *
+     * Condición de factibilidad para m copas extra:
+     *   r ≡ m (mod 2)  y  m² ≤ r ≤ m*(2k-m)  con k = n-1
+     *
+     * @param n número total de copas
+     * @param h altura objetivo en cm
+     * @return arreglo con los números de copa que deben ser visibles,
+     * en orden ascendente con la copa n al final, o null si la altura es imposible.
+     */
+    private int[] findVisibleCups(int n, int h) {
+        int minH = 2 * n - 1;
+        int maxH = n * n;
+        if (h < minH || h > maxH) {
+            return null;
+        }
+
+        int r = h - minH;
+        int k = n - 1;
+
+        int m = -1;
+        for (int candidate = 0; candidate <= k; candidate++) {
+            if ((r % 2) == (candidate % 2)
+                    && candidate * candidate <= r
+                    && r <= candidate * (2 * k - candidate)) {
+                m = candidate;
+                break;
+            }
+        }
+        if (m == -1) {
+            return null;
+        }
+
+        int s = (r + m) / 2;
+        boolean[] chosen = new boolean[k + 1];
+        int remSum   = s;
+        int remCount = m;
+
+        for (int i = k; i >= 1 && remCount > 0; i--) {
+            int need  = remSum - i;
+            int still = remCount - 1;
+            if (still == 0) {
+                if (i == remSum) {
+                    chosen[i] = true;
+                    remSum   = 0;
+                    remCount = 0;
+                }
+            } else {
+                int minFill = still * (still + 1) / 2;
+                int maxFill = still * (i - 1) - still * (still - 1) / 2;
+                if (need >= minFill && need <= maxFill) {
+                    chosen[i] = true;
+                    remSum   = need;
+                    remCount = still;
+                }
+            }
+        }
+
+        if (remCount != 0) {
+            return null;
+        }
+
+        int[] visible = new int[m + 1];
+        int idx = 0;
+        for (int i = 1; i <= k; i++) {
+            if (chosen[i]) {
+                visible[idx++] = i;
+            }
+        }
+        visible[idx] = n;
+        return visible;
+    }
 }
