@@ -50,16 +50,24 @@ public class Triangle extends Shape {
     }
 
     /** Mueve el triángulo unos píxeles hacia la derecha. */
-    public void moveRight() { moveHorizontal(20); }
+    public void moveRight() {
+        moveHorizontal(20);
+    }
 
     /** Mueve el triángulo unos píxeles hacia la izquierda. */
-    public void moveLeft() { moveHorizontal(-20); }
+    public void moveLeft() {
+        moveHorizontal(-20);
+    }
 
     /** Mueve el triángulo unos píxeles hacia arriba. */
-    public void moveUp() { moveVertical(-20); }
+    public void moveUp() {
+        moveVertical(-20);
+    }
 
     /** Mueve el triángulo unos píxeles hacia abajo. */
-    public void moveDown() { moveVertical(20); }
+    public void moveDown() {
+        moveVertical(20);
+    }
 
     /**
      * Mueve el triángulo horizontalmente.

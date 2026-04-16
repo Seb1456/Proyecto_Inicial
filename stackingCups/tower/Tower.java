@@ -83,7 +83,9 @@ public class Tower {
         if (visible) {
             leftSide.makeVisible();
             baseLine.makeVisible();
-            for (Rectangle r : heightMarks) r.makeVisible();
+            for (Rectangle r : heightMarks) {
+                r.makeVisible();
+            }
         }
     }
 
@@ -626,12 +628,16 @@ public class Tower {
      * Invocado por OpenerCup al ser apilada.
      */
     void clearAllLids() {
-        for (Lid l : lids) l.makeInvisible();
+        for (Lid l : lids) {
+            l.makeInvisible();
+        }
         lids.clear();
         lidsAsignadas.clear();
         pushOrder.removeIf(item -> !item.isContainer());
         alturaTotalPixelsCups = 0;
-        for (Cup c : cups) alturaTotalPixelsCups += c.getHeight();
+        for (Cup c : cups) {
+            alturaTotalPixelsCups += c.getHeight();
+        }
         reorganize1();
     }
 
@@ -684,7 +690,9 @@ public class Tower {
             cups.push(cup);
         }
         String[][] result = new String[items.size()][2];
-        for (int i = 0; i < items.size(); i++) result[i] = items.get(i);
+        for (int i = 0; i < items.size(); i++) {
+            result[i] = items.get(i);
+        }
         return result;
     }
 
@@ -862,7 +870,9 @@ public class Tower {
      */
     public int height() {
         int alturaTotal = 0;
-        for (Cup c : cups) alturaTotal += c.getHeightCm();
+        for (Cup c : cups) {
+            alturaTotal += c.getHeightCm();
+        }
         return alturaTotal;
     }
 
@@ -903,15 +913,23 @@ public class Tower {
     /** Hace visible la torre con todas sus copas y tapas. */
     public void makeVisible() {
         visible = true;
-        for (Cup c : cups) c.makeVisible();
-        for (Lid l : lids) l.makeVisible();
+        for (Cup c : cups) {
+            c.makeVisible();
+        }
+        for (Lid l : lids) {
+            l.makeVisible();
+        }
     }
 
     /** Hace invisible la torre con todas sus copas y tapas. */
     public void makeInvisible() {
         visible = false;
-        for (Cup c : cups) c.makeInvisible();
-        for (Lid l : lids) l.makeInvisible();
+        for (Cup c : cups) {
+            c.makeInvisible();
+        }
+        for (Lid l : lids) {
+            l.makeInvisible();
+        }
     }
 
     /**
@@ -919,5 +937,7 @@ public class Tower {
      *
      * @return true si la última operación fue exitosa, false en caso contrario
      */
-    public boolean ok() { return ok; }
+    public boolean ok() {
+        return ok;
+    }
 }

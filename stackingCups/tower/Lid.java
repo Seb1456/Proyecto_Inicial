@@ -48,7 +48,9 @@ public abstract class Lid implements StackItem {
     }
 
     /** @return número identificador de la tapa */
-    public int getNumber() { return number; }
+    public int getNumber() {
+        return number;
+    }
 
     /** Paleta completa de colores disponibles para las tapas. */
     protected static final String[] ALL_COLORS = {
