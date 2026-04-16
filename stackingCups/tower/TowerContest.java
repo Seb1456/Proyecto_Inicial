@@ -26,14 +26,23 @@ public class TowerContest {
      *         separadas por espacio. Retorna "impossible" si no existe solución.
      */
     public String solve(int n, int h) {
-        int[] perm    = new int[n];
-        boolean[] usado = new boolean[n + 1];
-        int[] resultado = buscar(perm, usado, 0, n, h, 0);
-        if (resultado == null) return "impossible";
+        int[] visible = findVisibleCups(n, h);
+        if (visible == null) {
+            return "impossible";
+        }
+        boolean[] isVisible = new boolean[n + 1];
+        for (int cup : visible) {
+            isVisible[cup] = true;
+        }
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < resultado.length; i++) {
-            if (i > 0) sb.append(" ");
-            sb.append(2 * resultado[i] - 1);
+        for (int cup : visible) {
+            if (sb.length() > 0) sb.append(" ");
+            sb.append(2 * cup - 1);
+        }
+        for (int i = 1; i <= n; i++) {
+            if (!isVisible[i]) {
+                sb.append(" ").append(2 * i - 1);
+            }
         }
         return sb.toString();
     }
