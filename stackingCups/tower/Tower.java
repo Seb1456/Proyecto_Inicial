@@ -188,10 +188,11 @@ public class Tower {
         int alturaProyeccion = alturaTotalPixelsCups + cAltura;
         int alturaMaxTorrePixels = maxHeight * 40;
         if (alturaProyeccion > alturaMaxTorrePixels) {
-            if (visible) JOptionPane.showMessageDialog(null,
+            if (visible){
+            JOptionPane.showMessageDialog(null,
                 "La altura de las copas superan la altura de la torre",
                 "No se puede añadir una copa más.", JOptionPane.ERROR_MESSAGE);
-            return;
+            }return;
         }
         if (maxCups != -1 && cups.size() >= maxCups) {
             if (visible) JOptionPane.showMessageDialog(null,
@@ -341,6 +342,7 @@ public class Tower {
         switch (type.toLowerCase()) {
             case "fearful": nueva = new FearfulLid(i); break;
             case "crazy":   nueva = new CrazyLid(i);   break;
+            case "anchor": nueva = new AnchorLid(i); break;
             default:        nueva = new NormalLid(i);   break;
         }
         if (!nueva.shouldExist(this)) {
