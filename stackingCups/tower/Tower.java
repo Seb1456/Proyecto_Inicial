@@ -125,12 +125,6 @@ public class Tower {
      *
      * @param n número identificador de la copa a agregar
      */
-    /**
-     * Agrega una copa normal con el número dado al tope de la torre.
-     * Verifica duplicados, altura máxima y límite de copas.
-     *
-     * @param n número identificador de la copa a agregar
-     */
     public void pushCup(int n) {
         ok = false;
         for (Cup existing : cups) {
@@ -284,11 +278,6 @@ public class Tower {
         ok = true;
     }
 
-    /**
-     * Agrega una tapa normal con el número dado a la torre.
-     *
-     * @param n número identificador de la tapa a agregar
-     */
     /**
      * Agrega una tapa normal con el número dado a la torre.
      * Verifica duplicados y altura máxima.
@@ -506,9 +495,6 @@ public class Tower {
         }
     }
 
-    /**
-     * Reorganiza visualmente usando greedy look-back.
-     */
     /**
      * Reorganiza visualmente usando greedy look-back unificado para copas y tapas.
      * Los elementos se posicionan en el orden en que fueron apilados (pushOrder).
