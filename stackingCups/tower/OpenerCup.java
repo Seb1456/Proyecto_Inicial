@@ -61,6 +61,6 @@ public class OpenerCup extends Cup {
      */
     @Override
     public void onPushed(Tower tower) {
-        tower.clearAllLids();
+        tower.clearLidsBlocking(this);
     }
 }

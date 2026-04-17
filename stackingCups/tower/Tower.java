@@ -613,21 +613,59 @@ public class Tower {
         }
     }
 
-    /**
-     * Elimina todas las tapas de la torre.
+     /**
+     * Elimina únicamente las tapas que bloquean el paso de la copa dada.
+     * Una tapa bloquea a la copa opener si el número de la tapa es mayor o
+     * igual al número de la copa (es decir, la tapa es tan ancha o más ancha).
+     * Las tapas más angostas se conservan.
+     *
      * Invocado por OpenerCup al ser apilada.
+     *
+     * @param opener la copa que acaba de entrar y limpia su camino
      */
-    void clearAllLids() {
+    void clearLidsBlocking(Cup opener) {
+        List<Lid> toKeep   = new ArrayList<>();
+        List<Lid> toRemove = new ArrayList<>();
+ 
         for (Lid l : lids) {
+            // La tapa bloquea si su número >= número de la copa opener
+            // (igual o mayor ancho que la copa)
+            if (l.getNumber() >= opener.getNumber()) {
+                toRemove.add(l);
+            } else {
+                toKeep.add(l);
+            }
+        }
+ 
+        for (Lid l : toRemove) {
+            lidsAsignadas.remove(l.getNumber());
+            pushOrder.remove(l);
             l.makeInvisible();
         }
+        // Recalcular alturaTotalPixelsCups solo para las que sí se eliminan
+        // y no estaban anidadas (el cálculo exacto depende de si estaban
+        // asignadas o libres; por simplicidad recalculamos desde cero).
         lids.clear();
-        lidsAsignadas.clear();
-        pushOrder.removeIf(item -> !item.isContainer());
+        lids.addAll(toKeep);
+ 
+        // Recalcular altura total
         alturaTotalPixelsCups = 0;
         for (Cup c : cups) {
             alturaTotalPixelsCups += c.getHeight();
         }
+        for (Lid l : lids) {
+            boolean cabeEnCup = false;
+            for (Cup c : cups) {
+                if (l.getWidth() < c.getWidth() && l.getHeight() <= c.getHeight()) {
+                    cabeEnCup = true;
+                    break;
+                }
+            }
+            if (!cabeEnCup) {
+                alturaTotalPixelsCups += l.getHeight();
+            }
+        }
+ 
         reorganize1();
     }
 
