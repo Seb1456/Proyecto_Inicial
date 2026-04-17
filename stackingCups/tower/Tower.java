@@ -19,21 +19,25 @@ public class Tower {
     private int maxHeight;
     private int alturaMaxTorrePixels;
     private int maxCups;
+    private int alturaProyeccion;
+    private int baseX = 120;
+    private int baseY = 260;
+    private int alturaTotalPixelsCups = 0;
+    private static final int PIXELES_POR_CM = 20;
+        
     private boolean visible;
+    private boolean ok;
+    
     private Rectangle leftSide;
     private Rectangle baseLine;
     private ArrayList<Rectangle> heightMarks;
-    private static final int PIXELES_POR_CM = 20;
     protected Stack<Cup> cups;
-    int alturaTotalPixelsCups = 0;
-    private int alturaProyeccion;
     protected Stack<Lid> lids;
+    
     Set<Integer> lidsAsignadas = new HashSet<>();
     private List<StackItem> pushOrder;
-    private boolean ok;
 
-    private int baseX = 120;
-    private int baseY = 260;
+
 
     /**
      * Crea una torre con ancho y altura máxima dados.

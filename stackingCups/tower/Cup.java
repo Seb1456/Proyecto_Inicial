@@ -53,9 +53,9 @@ public abstract class Cup implements StackItem {
      * Configura el tamaño y color de las tres partes visuales de la copa.
      */
     private void configureShapes() {
-        leftWall.changeSize(cupHeight, 6);
+        leftWall.changeSize(cupHeight -5, 6);
         leftWall.changeColor(color);
-        rightWall.changeSize(cupHeight, 5);
+        rightWall.changeSize(cupHeight -5, 5);
         rightWall.changeColor(color);
         base.changeSize(5, cupWidth);
         base.changeColor(color);
@@ -127,8 +127,19 @@ public abstract class Cup implements StackItem {
         rightWall.moveVertical(dy);
         base.moveHorizontal(dx);
         base.moveVertical(dy);
+        drawMarker(x, y);
     }
 
+    /**
+     * Dibuja el diferenciador para las copas
+     * Se invoca cada vez que la copa se reposiciona
+     * @param x posición X de la esquina superior izquierda de la copa
+     * @param y posición Y de la esquina superior izquierda de la copa
+     */
+    protected void drawMarker(int x, int y) {
+        
+    }
+    
     /**
      * Mueve la copa verticalmente una distancia relativa.
      *
