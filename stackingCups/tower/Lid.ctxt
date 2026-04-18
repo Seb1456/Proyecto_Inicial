@@ -1,0 +1,49 @@
+#BlueJ class context
+comment0.target=Lid
+comment0.text=\r\n\ Clase\ abstracta\ que\ representa\ una\ tapa\ para\ una\ copa\ cil\u00EDndrica.\r\n\ La\ tapa\ n\u00FAmero\ i\ tiene\ ancho\ (2i-1)\ cm\ y\ altura\ fija\ de\ 1\ cm.\r\n\ Su\ ancho\ coincide\ con\ el\ de\ la\ copa\ del\ mismo\ n\u00FAmero,\r\n\ por\ lo\ que\ encaja\ exactamente\ sobre\ ella.\r\n\r\n\ Principio\ Abierto/Cerrado\:\ esta\ clase\ est\u00E1\ cerrada\ para\ modificaci\u00F3n\ pero\r\n\ abierta\ para\ extensi\u00F3n.\ Los\ subtipos\ sobreescriben\ los\ m\u00E9todos\ gancho\r\n\ canBeRemoved,\ shouldExist\ y\ getDrawYOffset\ para\ definir\ comportamientos\ especiales.\r\n\r\n\ @author\ Paula\ D\u00EDaz\r\n\ @author\ Sebastian\ Granados\r\n\ @version\ 2\r\n
+comment1.params=number
+comment1.target=Lid(int)
+comment1.text=\r\n\ Crea\ una\ tapa\ con\ el\ n\u00FAmero\ identificador\ dado.\r\n\ Su\ ancho\ es\ (2*number\ -\ 1)\ cm\ y\ su\ alto\ es\ siempre\ 1\ cm.\r\n\r\n\ @param\ number\ n\u00FAmero\ identificador\ de\ la\ tapa,\r\n\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ debe\ coincidir\ con\ el\ n\u00FAmero\ de\ su\ copa\ correspondiente\r\n
+comment10.params=
+comment10.target=int\ getHeight()
+comment10.text=@return\ altura\ de\ la\ tapa\ en\ p\u00EDxeles\ (siempre\ 1\ cm\ \=\ 20px)
+comment11.params=
+comment11.target=int\ getWidth()
+comment11.text=@return\ ancho\ de\ la\ tapa\ en\ p\u00EDxeles
+comment12.params=tower
+comment12.target=boolean\ canBeRemoved(Tower)
+comment12.text=\r\n\ M\u00E9todo\ gancho\ invocado\ por\ Tower\ antes\ de\ intentar\ eliminar\ esta\ tapa.\r\n\ Retorna\ false\ para\ impedir\ la\ eliminaci\u00F3n.\r\n\r\n\ @param\ tower\ la\ torre\ que\ contiene\ esta\ tapa\r\n\ @return\ true\ si\ la\ tapa\ puede\ ser\ eliminada,\ false\ en\ caso\ contrario\r\n
+comment13.params=tower
+comment13.target=boolean\ shouldExist(Tower)
+comment13.text=\r\n\ M\u00E9todo\ gancho\ que\ determina\ si\ esta\ tapa\ debe\ existir\ en\ la\ torre.\r\n\ Invocado\ por\ Tower\ tras\ cada\ cambio\ en\ la\ pila\ de\ copas.\r\n\r\n\ @param\ tower\ la\ torre\ que\ contiene\ esta\ tapa\r\n\ @return\ true\ si\ la\ tapa\ debe\ permanecer,\ false\ si\ debe\ eliminarse\ autom\u00E1ticamente\r\n
+comment14.params=item
+comment14.target=int\ getDrawYOffset(StackItem)
+comment14.text=\r\n\ M\u00E9todo\ gancho\ que\ retorna\ el\ desplazamiento\ vertical\ de\ dibujo\ respecto\r\n\ al\ borde\ superior\ de\ su\ copa\ cuando\ est\u00E1\ asignada.\r\n\ El\ valor\ 0\ coloca\ la\ tapa\ en\ el\ tope\ de\ la\ copa\ (comportamiento\ normal).\r\n\r\n\ @param\ cup\ la\ copa\ a\ la\ que\ est\u00E1\ asignada\ esta\ tapa\r\n\ @return\ desplazamiento\ en\ p\u00EDxeles\ hacia\ abajo\ desde\ el\ tope\ de\ la\ copa\r\n
+comment15.params=
+comment15.target=int\ lidTheCup()
+comment15.text=\r\n\ M\u00E9todo\ gancho\ que\ retorna\ cu\u00E1ntos\ p\u00EDxeles\ debe\ hundirse\ esta\ tapa\r\n\ dentro\ de\ la\ copa\ al\ dibujarse\ (tanto\ asignada\ como\ independiente).\r\n\ El\ valor\ 0\ la\ coloca\ exactamente\ en\ el\ borde;\ un\ valor\ positivo\ la\ mete\r\n\ m\u00E1s\ adentro\ de\ la\ copa.\r\n\r\n\ @return\ desplazamiento\ de\ hundimiento\ en\ p\u00EDxeles\r\n
+comment2.params=
+comment2.target=int\ getNumber()
+comment2.text=@return\ n\u00FAmero\ identificador\ de\ la\ tapa
+comment3.params=palette
+comment3.target=java.lang.String\ randomColor(java.lang.String[])
+comment3.text=\r\n\ Selecciona\ un\ color\ al\ azar\ de\ la\ paleta\ dada.\r\n\r\n\ @param\ palette\ arreglo\ de\ nombres\ de\ colores\ entre\ los\ cuales\ elegir\r\n\ @return\ nombre\ de\ un\ color\ elegido\ aleatoriamente\r\n
+comment4.params=n
+comment4.target=java.lang.String\ assignColor(int)
+comment4.text=\r\n\ Asigna\ un\ color\ a\ la\ tapa\ seg\u00FAn\ su\ n\u00FAmero\ rotando\ por\ la\ paleta\ completa.\r\n\ Puede\ ser\ sobreescrito\ por\ subtipos\ para\ lograr\ apariencia\ visualmente\ diferenciada.\r\n\r\n\ @param\ n\ n\u00FAmero\ de\ la\ tapa\r\n\ @return\ nombre\ del\ color\ asignado\r\n
+comment5.params=x\ y
+comment5.target=void\ draw(int,\ int)
+comment5.text=\r\n\ Mueve\ la\ tapa\ a\ la\ posici\u00F3n\ absoluta\ (x,\ y).\r\n\r\n\ @param\ x\ nueva\ posici\u00F3n\ horizontal\ en\ p\u00EDxeles\r\n\ @param\ y\ nueva\ posici\u00F3n\ vertical\ en\ p\u00EDxeles\r\n
+comment6.params=distance
+comment6.target=void\ moveVertical(int)
+comment6.text=\r\n\ Mueve\ la\ tapa\ verticalmente\ una\ distancia\ relativa.\r\n\r\n\ @param\ distance\ p\u00EDxeles\ a\ desplazar\ (positivo\ \=\ abajo,\ negativo\ \=\ arriba)\r\n
+comment7.params=distance
+comment7.target=void\ moveHorizontal(int)
+comment7.text=\r\n\ Mueve\ la\ tapa\ horizontalmente\ una\ distancia\ relativa.\r\n\r\n\ @param\ distance\ p\u00EDxeles\ a\ desplazar\ (positivo\ \=\ derecha,\ negativo\ \=\ izquierda)\r\n
+comment8.params=
+comment8.target=void\ makeVisible()
+comment8.text=Hace\ visible\ la\ tapa\ en\ pantalla.
+comment9.params=
+comment9.target=void\ makeInvisible()
+comment9.text=Hace\ invisible\ la\ tapa\ en\ pantalla.
+numComments=16

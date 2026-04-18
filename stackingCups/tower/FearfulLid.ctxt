@@ -1,0 +1,16 @@
+#BlueJ class context
+comment0.target=FearfulLid
+comment0.text=\r\n\ Tapa\ Fearful\:\ no\ entra\ a\ la\ torre\ si\ su\ taza\ compa\u00F1era\ no\ est\u00E1\ presente,\r\n\ y\ no\ puede\ salir\ si\ est\u00E1\ tapando\ activamente\ a\ su\ taza.\r\n\r\n\ @author\ Paula\ D\u00EDaz\r\n\ @author\ Sebastian\ Granados\r\n\ @version\ 2\r\n
+comment1.params=number
+comment1.target=FearfulLid(int)
+comment1.text=\r\n\ Crea\ una\ tapa\ Fearful\ con\ el\ n\u00FAmero\ identificador\ dado.\r\n\r\n\ @param\ number\ n\u00FAmero\ identificador\ de\ la\ tapa\r\n
+comment2.params=n
+comment2.target=java.lang.String\ assignColor(int)
+comment2.text=\r\n\ Retorna\ un\ color\ calmado\ aleatorio\ para\ distinguir\ visualmente\r\n\ esta\ tapa\ de\ los\ dem\u00E1s\ tipos.\r\n\r\n\ @param\ n\ n\u00FAmero\ de\ la\ tapa\ (no\ utilizado)\r\n\ @return\ nombre\ de\ un\ color\ calmado\ elegido\ al\ azar\r\n
+comment3.params=tower
+comment3.target=boolean\ shouldExist(Tower)
+comment3.text=\r\n\ La\ tapa\ Fearful\ solo\ entra\ a\ la\ torre\ si\ su\ taza\ compa\u00F1era\ est\u00E1\ presente.\r\n\r\n\ @param\ tower\ la\ torre\ a\ la\ que\ se\ intenta\ agregar\ esta\ tapa\r\n\ @return\ true\ si\ la\ taza\ compa\u00F1era\ est\u00E1\ en\ la\ torre,\ false\ en\ caso\ contrario\r\n
+comment4.params=tower
+comment4.target=boolean\ canBeRemoved(Tower)
+comment4.text=\r\n\ La\ tapa\ Fearful\ no\ puede\ salir\ si\ est\u00E1\ tapando\ activamente\ a\ su\ taza.\r\n\ Si\ es\ una\ tapa\ independiente\ (no\ asignada),\ s\u00ED\ puede\ ser\ eliminada.\r\n\r\n\ @param\ tower\ la\ torre\ que\ contiene\ esta\ tapa\r\n\ @return\ false\ si\ est\u00E1\ asignada\ (tapando)\ a\ su\ taza,\ true\ en\ caso\ contrario\r\n
+numComments=5
