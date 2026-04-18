@@ -1,7 +1,0 @@
-#BlueJ class context
-comment0.target=NormalCup
-comment0.text=\r\n\ Copa\ normal\:\ comportamiento\ est\u00E1ndar\ sin\ modificaciones.\r\n\ Corresponde\ al\ tipo\ de\ copa\ original\ del\ proyecto.\r\n\r\n\ @author\ Paula\ D\u00EDaz\r\n\ @author\ Sebastian\ Granados\r\n\ @version\ 2\r\n
-comment1.params=number
-comment1.target=NormalCup(int)
-comment1.text=\r\n\ Crea\ una\ copa\ normal\ con\ el\ n\u00FAmero\ identificador\ dado.\r\n\r\n\ @param\ number\ n\u00FAmero\ identificador\ de\ la\ copa\r\n
-numComments=2
