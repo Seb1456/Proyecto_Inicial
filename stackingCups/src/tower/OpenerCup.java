@@ -1,4 +1,5 @@
 package tower;
+import shapes.Rectangle;
 
 /**
  * Copa Opener: al entrar a la torre elimina todas las tapas que le impiden el paso.
@@ -9,7 +10,11 @@ package tower;
  * @version 2
  */
 public class OpenerCup extends Cup {
-
+    
+    private Rectangle band;
+    private int bandX;
+    private int bandY;
+    
     /**
      * Crea una copa Opener con el número identificador dado.
      *
@@ -17,6 +22,24 @@ public class OpenerCup extends Cup {
      */
     public OpenerCup(int number) {
         super(number);
+        band = new Rectangle();
+        int bandWidth = Math.max(1, getWidth() - 12);
+        band.changeSize(4, bandWidth);
+        band.changeColor("white");
+        bandX = 0;
+        bandY = 0;
+    }
+    
+    @Override
+    protected void drawMarker(int x, int y) {
+        int newBandX = x + 6;
+        int newBandY = y + (getHeight() / 2) - 2;
+        int dx = newBandX - bandX;
+        int dy = newBandY - bandY;
+        bandX = newBandX;
+        bandY = newBandY;
+        band.moveHorizontal(dx);
+        band.moveVertical(dy);
     }
 
     /**
@@ -38,6 +61,6 @@ public class OpenerCup extends Cup {
      */
     @Override
     public void onPushed(Tower tower) {
-        tower.clearAllLids();
+        tower.clearLidsBlocking(this);
     }
 }

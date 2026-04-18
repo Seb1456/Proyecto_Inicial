@@ -19,21 +19,25 @@ public class Tower {
     private int maxHeight;
     private int alturaMaxTorrePixels;
     private int maxCups;
+    private int alturaProyeccion;
+    private int baseX = 120;
+    private int baseY = 260;
+    private int alturaTotalPixelsCups = 0;
+    private static final int PIXELES_POR_CM = 20;
+        
     private boolean visible;
+    private boolean ok;
+    
     private Rectangle leftSide;
     private Rectangle baseLine;
     private ArrayList<Rectangle> heightMarks;
-    private static final int PIXELES_POR_CM = 20;
     protected Stack<Cup> cups;
-    int alturaTotalPixelsCups = 0;
-    private int alturaProyeccion;
     protected Stack<Lid> lids;
+    
     Set<Integer> lidsAsignadas = new HashSet<>();
     private List<StackItem> pushOrder;
-    private boolean ok;
 
-    private int baseX = 120;
-    private int baseY = 260;
+
 
     /**
      * Crea una torre con ancho y altura máxima dados.
@@ -95,7 +99,9 @@ public class Tower {
      * @param cups número de copas a preapilar (mínimo 1)
      */
     public Tower(int cups) {
-        if (cups < 1) cups = 1;
+        if (cups < 1){ 
+            cups = 1;
+        }
         int maxHeight = cups * cups;
         int width = cups + 2;
         this.maxCups = cups;
@@ -112,15 +118,11 @@ public class Tower {
         this.ok = true;
         baseX = -35;
         baseY = 450;
-        for (int i = 1; i <= cups; i++) pushCup(i);
+        for (int i = 1; i <= cups; i++){
+            pushCup(i);
+        }
     }
 
-    /**
-     * Agrega una copa normal con el número dado al tope de la torre.
-     * Verifica duplicados, altura máxima y límite de copas.
-     *
-     * @param n número identificador de la copa a agregar
-     */
     /**
      * Agrega una copa normal con el número dado al tope de la torre.
      * Verifica duplicados, altura máxima y límite de copas.
@@ -134,9 +136,10 @@ public class Tower {
                 if (visible) JOptionPane.showMessageDialog(null,
                     "Ya existe una copa con el número " + n + " en la torre.",
                     "No se puede añadir", JOptionPane.ERROR_MESSAGE);
-                return;
             }
+            return;
         }
+        
         Cup c = new NormalCup(n);
         int cAltura = c.getHeight();
         int alturaProyeccion = alturaTotalPixelsCups + cAltura;
@@ -157,7 +160,9 @@ public class Tower {
         pushOrder.add(c);
         c.onPushed(this);
         reorganize1();
-        if (visible) c.makeVisible();
+        if (visible){
+            c.makeVisible();
+        }
         ok = true;
         alturaTotalPixelsCups = alturaProyeccion;
     }
@@ -190,10 +195,11 @@ public class Tower {
         int alturaProyeccion = alturaTotalPixelsCups + cAltura;
         int alturaMaxTorrePixels = maxHeight * 40;
         if (alturaProyeccion > alturaMaxTorrePixels) {
-            if (visible) JOptionPane.showMessageDialog(null,
+            if (visible){
+            JOptionPane.showMessageDialog(null,
                 "La altura de las copas superan la altura de la torre",
                 "No se puede añadir una copa más.", JOptionPane.ERROR_MESSAGE);
-            return;
+            }return;
         }
         if (maxCups != -1 && cups.size() >= maxCups) {
             if (visible) JOptionPane.showMessageDialog(null,
@@ -205,7 +211,9 @@ public class Tower {
         pushOrder.add(c);
         c.onPushed(this);
         reorganize1();
-        if (visible) c.makeVisible();
+        if (visible){
+            c.makeVisible();
+        }
         ok = true;
         alturaTotalPixelsCups = alturaProyeccion;
     }
@@ -251,7 +259,9 @@ public class Tower {
 
         Cup targetCup = null;
         for (Cup c : cups) {
-            if (c.getNumber() == n) { targetCup = c; break; }
+            if (c.getNumber() == n) { 
+                targetCup = c; break; 
+            }
         }
         if (targetCup == null) {
             reorganize1();
@@ -280,11 +290,6 @@ public class Tower {
         ok = true;
     }
 
-    /**
-     * Agrega una tapa normal con el número dado a la torre.
-     *
-     * @param n número identificador de la tapa a agregar
-     */
     /**
      * Agrega una tapa normal con el número dado a la torre.
      * Verifica duplicados y altura máxima.
@@ -321,7 +326,9 @@ public class Tower {
         }
         lids.push(nueva);
         pushOrder.add(nueva);
-        if (visible) nueva.makeVisible();
+        if (visible) {
+            nueva.makeVisible();
+        }
         reorganize1();
         ok = true;
     }
@@ -348,6 +355,7 @@ public class Tower {
         switch (type.toLowerCase()) {
             case "fearful": nueva = new FearfulLid(i); break;
             case "crazy":   nueva = new CrazyLid(i);   break;
+            case "anchor": nueva = new AnchorLid(i); break;
             default:        nueva = new NormalLid(i);   break;
         }
         if (!nueva.shouldExist(this)) {
@@ -375,7 +383,9 @@ public class Tower {
         }
         lids.push(nueva);
         pushOrder.add(nueva);
-        if (visible) nueva.makeVisible();
+        if (visible){
+            nueva.makeVisible();
+        }
         reorganize1();
         ok = true;
     }
@@ -498,13 +508,12 @@ public class Tower {
                 }
                 tempY -= c.getHeight();
             }
-            if (!found) l.draw(lidX, baseY - (maxHeight * 40) - 50);
+            if (!found){
+                l.draw(lidX, baseY - (maxHeight * 40) - 50);
+            }
         }
     }
 
-    /**
-     * Reorganiza visualmente usando greedy look-back.
-     */
     /**
      * Reorganiza visualmente usando greedy look-back unificado para copas y tapas.
      * Los elementos se posicionan en el orden en que fueron apilados (pushOrder).
@@ -578,7 +587,9 @@ public class Tower {
     /** Intercambia dos elementos en pushOrder por referencia. */
     private void swapInPushOrder(StackItem a, StackItem b) {
         int ia = pushOrder.indexOf(a), ib = pushOrder.indexOf(b);
-        if (ia == -1 || ib == -1) return;
+        if (ia == -1 || ib == -1) {
+            return;
+        }
         pushOrder.set(ia, b);
         pushOrder.set(ib, a);
     }
@@ -587,7 +598,9 @@ public class Tower {
     private void rebuildCupOrderInPushOrder(List<Cup> newOrder) {
         List<Integer> pos = new ArrayList<>();
         for (int i = 0; i < pushOrder.size(); i++) {
-            if (pushOrder.get(i).isContainer()) pos.add(i);
+            if (pushOrder.get(i).isContainer()){
+                pos.add(i);
+            }
         }
         for (int i = 0; i < pos.size() && i < newOrder.size(); i++) {
             pushOrder.set(pos.get(i), newOrder.get(i));
@@ -599,7 +612,9 @@ public class Tower {
      */
     private boolean tieneTapa(int cupNumber) {
         for (Lid l : lids) {
-            if (l.getNumber() == cupNumber) return true;
+            if (l.getNumber() == cupNumber){
+                return true;
+            }
         }
         return false;
     }
@@ -623,21 +638,54 @@ public class Tower {
         }
     }
 
-    /**
-     * Elimina todas las tapas de la torre.
+     /**
+     * Elimina únicamente las tapas que bloquean el paso de la copa dada.
+     * Una tapa bloquea a la copa opener si el número de la tapa es mayor o
+     * igual al número de la copa (es decir, la tapa es tan ancha o más ancha).
+     * Las tapas más angostas se conservan.
+     *
      * Invocado por OpenerCup al ser apilada.
+     *
+     * @param opener la copa que acaba de entrar y limpia su camino
      */
-    void clearAllLids() {
+    void clearLidsBlocking(Cup opener) {
+        List<Lid> toKeep   = new ArrayList<>();
+        List<Lid> toRemove = new ArrayList<>();
+ 
         for (Lid l : lids) {
+            // La tapa bloquea si su número >= número de la copa opener
+            if (l.getNumber() >= opener.getNumber()) {
+                toRemove.add(l);
+            } else {
+                toKeep.add(l);
+            }
+        }
+ 
+        for (Lid l : toRemove) {
+            lidsAsignadas.remove(l.getNumber());
+            pushOrder.remove(l);
             l.makeInvisible();
         }
         lids.clear();
-        lidsAsignadas.clear();
-        pushOrder.removeIf(item -> !item.isContainer());
+        lids.addAll(toKeep);
+ 
         alturaTotalPixelsCups = 0;
         for (Cup c : cups) {
             alturaTotalPixelsCups += c.getHeight();
         }
+        for (Lid l : lids) {
+            boolean cabeEnCup = false;
+            for (Cup c : cups) {
+                if (l.getWidth() < c.getWidth() && l.getHeight() <= c.getHeight()) {
+                    cabeEnCup = true;
+                    break;
+                }
+            }
+            if (!cabeEnCup) {
+                alturaTotalPixelsCups += l.getHeight();
+            }
+        }
+ 
         reorganize1();
     }
 
@@ -649,7 +697,9 @@ public class Tower {
      */
     public boolean hasCup(int n) {
         for (Cup c : cups) {
-            if (c.getNumber() == n) return true;
+            if (c.getNumber() == n){
+                return true;
+            }
         }
         return false;
     }
@@ -663,7 +713,9 @@ public class Tower {
         int count = 0;
         for (Cup c : cups) {
             for (Lid l : lids) {
-                if (c.getNumber() == l.getNumber()) { count++; break; }
+                if (c.getNumber() == l.getNumber()) {
+                    count++; break; 
+                }
             }
         }
         return count;
@@ -709,7 +761,9 @@ public class Tower {
                     hasLid = true; break;
                 }
             }
-            if (!hasLid) pushLid(c.getNumber());
+            if (!hasLid){
+                pushLid(c.getNumber());
+            }
             lidsAsignadas.add(c.getNumber());
         }
         reorganize();
@@ -763,8 +817,12 @@ public class Tower {
                 int numJ = Integer.parseInt(items[j][1]);
                 int idxI = -1, idxJ = -1;
                 for (int k = 0; k < cupList.size(); k++) {
-                    if (cupList.get(k).getNumber() == numI) idxI = k;
-                    if (cupList.get(k).getNumber() == numJ) idxJ = k;
+                    if (cupList.get(k).getNumber() == numI) {
+                        idxI = k;
+                    }
+                    if (cupList.get(k).getNumber() == numJ){
+                        idxJ = k;
+                    }
                 }
                 if (idxI == -1 || idxJ == -1) continue;
                 Cup temp = cupList.get(idxI);
@@ -792,18 +850,25 @@ public class Tower {
         List<Cup> list = new ArrayList<>(cups);
         int idx1 = -1, idx2 = -1;
         for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).getNumber() == num1) idx1 = i;
-            if (list.get(i).getNumber() == num2) idx2 = i;
+            if (list.get(i).getNumber() == num1) {
+                idx1 = i;
+            }
+            if (list.get(i).getNumber() == num2) {
+                idx2 = i;
+            }
         }
-        if (idx1 == -1 || idx2 == -1) return;
+        if (idx1 == -1 || idx2 == -1) {
+            return;
+        }
         Cup c1 = list.get(idx1), c2 = list.get(idx2);
         list.set(idx1, c2);
         list.set(idx2, c1);
         cups.clear();
         cups.addAll(list);
         swapInPushOrder(c1, c2);
-        if (lidsAsignadas.contains(num1) || lidsAsignadas.contains(num2)) reorganize();
-        else reorganize1();
+        if (lidsAsignadas.contains(num1) || lidsAsignadas.contains(num2)){
+            reorganize();
+        }else reorganize1();
         ok = true;
     }
 
@@ -812,18 +877,25 @@ public class Tower {
         List<Lid> list = new ArrayList<>(lids);
         int idx1 = -1, idx2 = -1;
         for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).getNumber() == num1) idx1 = i;
-            if (list.get(i).getNumber() == num2) idx2 = i;
+            if (list.get(i).getNumber() == num1){
+                idx1 = i;
+            }
+            if (list.get(i).getNumber() == num2){
+                idx2 = i;
+            }
         }
-        if (idx1 == -1 || idx2 == -1) return;
+        if (idx1 == -1 || idx2 == -1) {
+            return;
+        }
         Lid l1 = list.get(idx1), l2 = list.get(idx2);
         list.set(idx1, l2);
         list.set(idx2, l1);
         lids.clear();
         lids.addAll(list);
         swapInPushOrder(l1, l2);
-        if (lidsAsignadas.contains(num1) || lidsAsignadas.contains(num2)) reorganize();
-        else reorganize1();
+        if (lidsAsignadas.contains(num1) || lidsAsignadas.contains(num2)){
+            reorganize();
+        }else reorganize1();
         ok = true;
     }
 
@@ -833,13 +905,19 @@ public class Tower {
         List<Lid> lidList = new ArrayList<>(lids);
         int cupIdx = -1;
         for (int i = 0; i < cupList.size(); i++) {
-            if (cupList.get(i).getNumber() == cupNum) { cupIdx = i; break; }
+            if (cupList.get(i).getNumber() == cupNum) { 
+                cupIdx = i; break; 
+            }
         }
         int lidIdx = -1;
         for (int i = 0; i < lidList.size(); i++) {
-            if (lidList.get(i).getNumber() == lidNum) { lidIdx = i; break; }
+            if (lidList.get(i).getNumber() == lidNum) { 
+                lidIdx = i; break; 
+            }
         }
-        if (cupIdx == -1 || lidIdx == -1) return;
+        if (cupIdx == -1 || lidIdx == -1) {
+            return;
+        }
         Cup targetCup = cupList.get(cupIdx);
         Lid targetLid = lidList.get(lidIdx);
         int alturaExtra = targetCup.getHeight() - targetLid.getHeight();
@@ -858,8 +936,9 @@ public class Tower {
         lids.clear(); lids.addAll(lidList);
         alturaTotalPixelsCups += alturaExtra;
         swapInPushOrder(targetCup, targetLid);
-        if (lidsAsignadas.contains(cupNum)) reorganize();
-        else reorganize1();
+        if (lidsAsignadas.contains(cupNum)){
+            reorganize();
+        }else reorganize1();
         ok = true;
     }
 
@@ -905,7 +984,9 @@ public class Tower {
                 stackingBottom += c.getHeightCm();
             }
             int top = bottomPos[i] + c.getHeightCm();
-            if (top > maxTop) maxTop = top;
+            if (top > maxTop){  
+            maxTop = top;
+            }
         }
         return maxTop;
     }
