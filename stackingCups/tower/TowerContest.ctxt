@@ -7,10 +7,6 @@ comment1.text=\r\n\ Resuelve\ el\ problema\ de\ la\ marat\u00F3n\ para\ n\ copas
 comment2.params=n\ h
 comment2.target=void\ simulate(int,\ int)
 comment2.text=\r\n\ Simula\ visualmente\ la\ soluci\u00F3n\ del\ problema\ para\ n\ copas\ y\ altura\ h.\r\n\ Si\ existe\ soluci\u00F3n,\ crea\ una\ Tower\ y\ apila\ copas\ normales\ en\ el\ orden\ correcto.\r\n\ Si\ no\ existe\ soluci\u00F3n,\ muestra\ un\ mensaje\ de\ error.\r\n\r\n\ @param\ n\ n\u00FAmero\ de\ copas\ a\ simular\r\n\ @param\ h\ altura\ objetivo\ en\ cm\r\n
-comment3.params=perm\ usado\ pos\ n\ h\ alturaActual
-comment3.target=int[]\ buscar(int[],\ boolean[],\ int,\ int,\ int,\ int)
-comment3.text=\r\n\ Busca\ mediante\ backtracking\ una\ permutaci\u00F3n\ de\ [1..n]\ tal\ que\r\n\ al\ apilar\ las\ copas\ en\ ese\ orden\ la\ altura\ visual\ sea\ exactamente\ h.\r\n\r\n\ @param\ perm\ \ \ \ \ \ \ \ arreglo\ donde\ se\ construye\ la\ permutaci\u00F3n\ actual\r\n\ @param\ usado\ \ \ \ \ \ \ arreglo\ booleano\ que\ indica\ qu\u00E9\ n\u00FAmeros\ ya\ est\u00E1n\ en\ perm\r\n\ @param\ pos\ \ \ \ \ \ \ \ \ posici\u00F3n\ actual\ en\ la\ permutaci\u00F3n\r\n\ @param\ n\ \ \ \ \ \ \ \ \ \ \ n\u00FAmero\ total\ de\ copas\r\n\ @param\ h\ \ \ \ \ \ \ \ \ \ \ altura\ objetivo\ en\ cm\r\n\ @param\ alturaActual\ altura\ acumulada\ hasta\ la\ posici\u00F3n\ actual\r\n\ @return\ arreglo\ con\ la\ permutaci\u00F3n\ v\u00E1lida\ encontrada,\ o\ null\ si\ no\ existe\r\n
-comment4.params=n\ h
-comment4.target=int[]\ findVisibleCups(int,\ int)
-comment4.text=\r\n\ Determina\ greedy\ qu\u00E9\ copas\ deben\ ser\ visibles\ (LR-m\u00E1ximos)\ para\r\n\ alcanzar\ exactamente\ la\ altura\ h\ con\ n\ copas.\r\n\r\n\ La\ copa\ n\ siempre\ es\ visible.\ Se\ buscan\ m\ copas\ adicionales\ de\ {1..n-1}\r\n\ cuyos\ \u00EDndices\ sumen\ s\ \=\ (r+m)/2,\ donde\ r\ \=\ h-(2n-1).\r\n\r\n\ Condici\u00F3n\ de\ factibilidad\ para\ m\ copas\ extra\:\r\n\ \ \ r\ \u2261\ m\ (mod\ 2)\ \ y\ \ m\u00B2\ \u2264\ r\ \u2264\ m*(2k-m)\ \ con\ k\ \=\ n-1\r\n\r\n\ @param\ n\ n\u00FAmero\ total\ de\ copas\r\n\ @param\ h\ altura\ objetivo\ en\ cm\r\n\ @return\ arreglo\ con\ los\ n\u00FAmeros\ de\ copa\ que\ deben\ ser\ visibles,\r\n\ en\ orden\ ascendente\ con\ la\ copa\ n\ al\ final,\ o\ null\ si\ la\ altura\ es\ imposible.\r\n
-numComments=5
+comment3.params=n\ h
+comment3.target=int[]\ findVisibleCups(int,\ int)
+numComments=4
