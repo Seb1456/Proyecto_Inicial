@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(javac *)",
+      "Bash(xargs -I{} bash -c 'jar tf \"{}\" 2>/dev/null | grep -q \"org/junit/Test.class\" && echo \"{}\"')"
+    ]
+  }
+}

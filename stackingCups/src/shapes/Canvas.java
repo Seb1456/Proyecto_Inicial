@@ -14,7 +14,7 @@ import java.util.*;
  * @author Michael Kolling (mik)
  * @version 1.6 (shapes)
  */
-public class Canvas {
+public final class Canvas {
 
     private static Canvas canvasSingleton;
     private static boolean enabled = true;
@@ -123,34 +123,63 @@ public class Canvas {
      * @param colorString nombre del nuevo color (ej. "red", "blue", "green")
      */
     public void setForegroundColor(String colorString) {
-        if      (colorString.equals("red"))          graphic.setColor(Color.red);
-        else if (colorString.equals("black"))        graphic.setColor(Color.black);
-        else if (colorString.equals("blue"))         graphic.setColor(Color.blue);
-        else if (colorString.equals("yellow"))       graphic.setColor(Color.yellow);
-        else if (colorString.equals("green"))        graphic.setColor(Color.green);
-        else if (colorString.equals("magenta"))      graphic.setColor(Color.magenta);
-        else if (colorString.equals("white"))        graphic.setColor(Color.white);
-        else if (colorString.equals("cyan"))         graphic.setColor(Color.cyan);
-        else if (colorString.equals("orange"))       graphic.setColor(new Color(255, 165,   0));
-        else if (colorString.equals("pink"))         graphic.setColor(new Color(255, 105, 180));
-        else if (colorString.equals("purple"))       graphic.setColor(new Color(128,   0, 128));
-        else if (colorString.equals("gray"))         graphic.setColor(Color.gray);
-        else if (colorString.equals("brown"))        graphic.setColor(new Color(139,  69,  19));
-        else if (colorString.equals("darkGreen"))    graphic.setColor(new Color(  0, 100,   0));
-        else if (colorString.equals("lightBlue"))    graphic.setColor(new Color(135, 206, 235));
-        else if (colorString.equals("lime"))         graphic.setColor(new Color( 50, 205,  50));
-        else if (colorString.equals("gold"))         graphic.setColor(new Color(255, 215,   0));
-        else if (colorString.equals("teal"))         graphic.setColor(new Color(  0, 128, 128));
-        else if (colorString.equals("navy"))         graphic.setColor(new Color(  0,   0, 128));
-        else if (colorString.equals("coral"))        graphic.setColor(new Color(255, 127,  80));
-        else if (colorString.equals("salmon"))       graphic.setColor(new Color(250, 128, 114));
-        else if (colorString.equals("violet"))       graphic.setColor(new Color(238, 130, 238));
-        else if (colorString.equals("indigo"))       graphic.setColor(new Color( 75,   0, 130));
-        else if (colorString.equals("turquoise"))    graphic.setColor(new Color( 64, 224, 208));
-        else if (colorString.equals("crimson"))      graphic.setColor(new Color(220,  20,  60));
-        else if (colorString.equals("olive"))        graphic.setColor(new Color(128, 128,   0));
-        else if (colorString.equals("maroon"))       graphic.setColor(new Color(128,   0,   0));
-        else                                         graphic.setColor(Color.black);
+        if ("red".equals(colorString)){
+            graphic.setColor(Color.red);
+        } else if ("black".equals(colorString)){
+            graphic.setColor(Color.black);
+        } else if ("blue".equals(colorString)){
+            graphic.setColor(Color.blue);
+        } else if ("yellow".equals(colorString)){
+            graphic.setColor(Color.yellow);
+        } else if ("green".equals(colorString)){
+            graphic.setColor(Color.green);
+        } else if ("magenta".equals(colorString)){
+            graphic.setColor(Color.magenta);
+        } else if ("white".equals(colorString)){
+            graphic.setColor(Color.white);
+        } else if ("cyan".equals(colorString)){
+            graphic.setColor(Color.cyan);
+        } else if ("orange".equals(colorString)){
+            graphic.setColor(new Color(255, 165,   0));
+        } else if ("pink".equals(colorString)){
+            graphic.setColor(new Color(255, 105, 180));
+        } else if ("purple".equals(colorString)){
+            graphic.setColor(new Color(128,   0, 128));
+        } else if ("gray".equals(colorString)){
+            graphic.setColor(Color.gray);
+        } else if ("brown".equals(colorString)){
+            graphic.setColor(new Color(139,  69,  19));
+        } else if ("darkGreen".equals(colorString)){
+            graphic.setColor(new Color(  0, 100,   0));
+        } else if ("lightBlue".equals(colorString)){
+            graphic.setColor(new Color(135, 206, 235));
+        } else if ("lime".equals(colorString)){
+            graphic.setColor(new Color( 50, 205,  50));
+        } else if ("gold".equals(colorString)){
+            graphic.setColor(new Color(255, 215,   0));
+        } else if ("teal".equals(colorString)){
+            graphic.setColor(new Color(  0, 128, 128));
+        } else if ("navy".equals(colorString)){
+            graphic.setColor(new Color(  0,   0, 128));
+        } else if ("coral".equals(colorString)){
+            graphic.setColor(new Color(255, 127,  80));
+        } else if ("salmon".equals(colorString)){
+            graphic.setColor(new Color(250, 128, 114));
+        } else if ("violet".equals(colorString)){
+            graphic.setColor(new Color(238, 130, 238));
+        } else if ("indigo".equals(colorString)){
+            graphic.setColor(new Color( 75,   0, 130));
+        } else if ("turquoise".equals(colorString)){
+            graphic.setColor(new Color( 64, 224, 208));
+        } else if ("crimson".equals(colorString)){
+            graphic.setColor(new Color(220,  20,  60));
+        } else if ("olive".equals(colorString)){
+            graphic.setColor(new Color(128, 128,   0));
+        } else if ("maroon".equals(colorString)){
+            graphic.setColor(new Color(128,   0,   0));
+        } else {
+            graphic.setColor(Color.black);
+        }
     }
 
     /**

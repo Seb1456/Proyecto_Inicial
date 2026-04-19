@@ -1,0 +1,15 @@
+#BlueJ class context
+comment0.target=TowerContestCTest
+comment1.params=
+comment1.target=void\ accordingCOShouldContestSolveReturn1375()
+comment1.text=\r\n\ Valida\ que\ para\ n\ \=\ 4\ y\ h\ \=\ 11\ el\ resultado\ debe\ ser\ 1\ 3\ 7\ 5\r\n
+comment2.params=
+comment2.target=void\ accordingCOShouldTrivialSolutionReturn93751()
+comment2.text=\r\n\ Valida\ que\ para\ n\ \=\ 5\ y\ h\ \=\ 11\ el\ resultado\ debe\ ser\ 9\ 3\ 7\ 5\ 1\r\n
+comment3.params=
+comment3.target=void\ testAccordingORShouldSolveN_4H_12_Return5317()
+comment3.text=\r\n\ Valida\ que\ para\ n\=4\ y\ h\=12\ el\ resultado\ es\ 5\ 3\ 1\ 7\r\n
+comment4.params=
+comment4.target=void\ testAccordingORShouldSolveN_5H_16_Return75319()
+comment4.text=\r\n\ Valida\ que\ para\ n\=5\ y\ h\=16\ el\ resultado\ es\ 7\ 5\ 3\ 1\ 9\r\n
+numComments=5

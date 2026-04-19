@@ -1,8 +1,8 @@
 package tower;
 
 import java.util.*;
-import shapes.Rectangle;
 import javax.swing.JOptionPane;
+import shapes.Rectangle;
 
 /**
  * Representa una torre que puede contener copas (Cup) y tapas (Lid) apiladas.
@@ -55,7 +55,7 @@ public class Tower {
         this.maxCups = -1;
         this.ok = true;
         baseX = -35;
-        baseY = 650;
+        baseY = 450;
 
         leftSide = new Rectangle();
         baseLine = new Rectangle();
@@ -64,13 +64,13 @@ public class Tower {
         int towerHeightPixels = maxHeight * 40;
         int towerWidthPixels = width * 40;
 
-        leftSide.changeSize(towerHeightPixels + 100, 5);
+        leftSide.changeSize(towerHeightPixels, 5);
         leftSide.moveHorizontal(baseX);
-        leftSide.moveVertical(baseY - towerHeightPixels - 50);
+        leftSide.moveVertical(baseY - towerHeightPixels);
         leftSide.changeColor("black");
 
-        baseLine.changeSize(5, towerWidthPixels + 20);
-        baseLine.moveHorizontal(baseX - 10);
+        baseLine.changeSize(5, towerWidthPixels);
+        baseLine.moveHorizontal(baseX);
         baseLine.moveVertical(baseY);
         baseLine.changeColor("black");
 
@@ -117,7 +117,7 @@ public class Tower {
         this.pushOrder = new ArrayList<>();
         this.ok = true;
         baseX = -35;
-        baseY = 650;
+        baseY = 450;
         for (int i = 1; i <= cups; i++){
             pushCup(i);
         }
@@ -133,53 +133,44 @@ public class Tower {
         ok = false;
         for (Cup existing : cups) {
             if (existing.getNumber() == n) {
-                if (visible) JOptionPane.showMessageDialog(null,
+                if (visible) {
+                    JOptionPane.showMessageDialog(null,
                     "Ya existe una copa con el número " + n + " en la torre.",
                     "No se puede añadir", JOptionPane.ERROR_MESSAGE);
+                }
             }
             return;
         }
         
         Cup c = new NormalCup(n);
-        cups.push(c);
-        pushOrder.add(c);
-        c.onPushed(this);
-    
-        int alturaVisualCm = heightVisual();                
-        int alturaVisualPixels = alturaVisualCm * 40;
-        cups.pop();
-        pushOrder.remove(c);
-    
+        int cAltura = c.getHeight();
+        int alturaProyeccion = alturaTotalPixelsCups + cAltura;
         int alturaMaxTorrePixels = maxHeight * 40;
-    
-        if (alturaVisualPixels > alturaMaxTorrePixels) {
-            if (visible) {
+        if (alturaProyeccion > alturaMaxTorrePixels) {
+            if (visible){
                 JOptionPane.showMessageDialog(null,
-                    "La altura de las copas supera la altura de la torre",
-                    "No se puede añadir una copa más.", JOptionPane.ERROR_MESSAGE);
+                "La altura de las copas superan la altura de la torre",
+                "No se puede añadir una copa más.", JOptionPane.ERROR_MESSAGE);
+                return;
             }
-            return;
         }
-    
         if (maxCups != -1 && cups.size() >= maxCups) {
-            if (visible) {
+            if (visible){
                 JOptionPane.showMessageDialog(null,
-                    "Esta torre solo admite " + maxCups + " copa(s).",
-                    "Límite alcanzado", JOptionPane.ERROR_MESSAGE);
+                "Esta torre solo admite " + maxCups + " copa(s).",
+                "Límite alcanzado", JOptionPane.ERROR_MESSAGE);
+                return;
             }
-            return;
         }
         cups.push(c);
         pushOrder.add(c);
         c.onPushed(this);
-    
-        reorganize1();               
-    
-        if (visible) {
+        reorganize1();
+        if (visible){
             c.makeVisible();
         }
-        alturaTotalPixelsCups = alturaVisualPixels;
         ok = true;
+        alturaTotalPixelsCups = alturaProyeccion;
     }
 
     /**
@@ -194,16 +185,19 @@ public class Tower {
         ok = false;
         for (Cup existing : cups) {
             if (existing.getNumber() == i) {
-                if (visible) JOptionPane.showMessageDialog(null,
+                if (visible){
+                    JOptionPane.showMessageDialog(null,
                     "Ya existe una copa con el número " + i + " en la torre.",
                     "No se puede añadir", JOptionPane.ERROR_MESSAGE);
-                return;
+                    return;
+                }
             }
         }
         Cup c;
         switch (type.toLowerCase()) {
             case "opener":       c = new OpenerCup(i);       break;
             case "hierarchical": c = new HierarchicalCup(i); break;
+            case "cover":        c = new CoverCup(i);        break;
             default:             c = new NormalCup(i);       break;
         }
         int cAltura = c.getHeight();
@@ -211,17 +205,18 @@ public class Tower {
         int alturaMaxTorrePixels = maxHeight * 40;
         if (alturaProyeccion > alturaMaxTorrePixels) {
             if (visible){
-                JOptionPane.showMessageDialog(null,
+            JOptionPane.showMessageDialog(null,
                 "La altura de las copas superan la altura de la torre",
                 "No se puede añadir una copa más.", JOptionPane.ERROR_MESSAGE);
-            } 
-            return;
+            } return;
         }
         if (maxCups != -1 && cups.size() >= maxCups) {
-            if (visible) JOptionPane.showMessageDialog(null,
+            if (visible){
+                JOptionPane.showMessageDialog(null,
                 "Esta torre solo admite " + maxCups + " copa(s).",
                 "Límite alcanzado", JOptionPane.ERROR_MESSAGE);
-            return;
+                return;
+            }
         }
         cups.push(c);
         pushOrder.add(c);
@@ -241,17 +236,21 @@ public class Tower {
     public void popCup() {
         ok = false;
         if (cups.isEmpty()) {
-            if (visible) JOptionPane.showMessageDialog(null,
+            if (visible){
+                JOptionPane.showMessageDialog(null,
                 "No es posible hacer pop cuando no hay copas.",
                 "No hay copas en la torre.", JOptionPane.ERROR_MESSAGE);
-            return;
+                return;
+            }
         }
         Cup c = cups.peek();
         if (!c.canBeRemoved(this)) {
-            if (visible) JOptionPane.showMessageDialog(null,
+            if (visible){
+                JOptionPane.showMessageDialog(null,
                 "Esta copa no puede ser eliminada.",
                 "No se puede quitar", JOptionPane.ERROR_MESSAGE);
-            return;
+                return;
+            }
         }
         cups.pop();
         pushOrder.remove(c);
@@ -284,10 +283,12 @@ public class Tower {
             return;
         }
         if (!targetCup.canBeRemoved(this)) {
-            if (visible) JOptionPane.showMessageDialog(null,
+            if (visible){
+                JOptionPane.showMessageDialog(null,
                 "Esta copa no puede ser eliminada.",
                 "No se puede quitar", JOptionPane.ERROR_MESSAGE);
-            return;
+                return;
+            }
         }
         Stack<Cup> temp = new Stack<>();
         while (!cups.isEmpty()) {
@@ -316,10 +317,12 @@ public class Tower {
         ok = false;
         for (Lid l : lids) {
             if (l.getNumber() == n) {
-                if (visible) JOptionPane.showMessageDialog(null,
+                if (visible){
+                    JOptionPane.showMessageDialog(null,
                     "Ya existe una tapa con el número " + n,
                     "No se puede añadir", JOptionPane.ERROR_MESSAGE);
-                return;
+                    return;
+                }
             }
         }
         Lid nueva = new NormalLid(n);
@@ -333,10 +336,12 @@ public class Tower {
         if (!cabeEnCup) {
             int alturaProyeccion = alturaTotalPixelsCups + nueva.getHeight();
             if (alturaProyeccion > maxHeight * 40) {
-                if (visible) JOptionPane.showMessageDialog(null,
+                if (visible){
+                    JOptionPane.showMessageDialog(null,
                     "La tapa supera la altura de la torre.",
                     "No se puede añadir", JOptionPane.ERROR_MESSAGE);
-                return;
+                    return;
+                }
             }
             alturaTotalPixelsCups += nueva.getHeight();
         }
@@ -361,10 +366,12 @@ public class Tower {
         ok = false;
         for (Lid l : lids) {
             if (l.getNumber() == i) {
-                if (visible) JOptionPane.showMessageDialog(null,
+                if (visible){
+                    JOptionPane.showMessageDialog(null,
                     "Ya existe una tapa con el número " + i,
                     "No se puede añadir", JOptionPane.ERROR_MESSAGE);
-                return;
+                    return;
+                }
             }
         }
         Lid nueva;
@@ -375,10 +382,12 @@ public class Tower {
             default:        nueva = new NormalLid(i);   break;
         }
         if (!nueva.shouldExist(this)) {
-            if (visible) JOptionPane.showMessageDialog(null,
+            if (visible){
+                JOptionPane.showMessageDialog(null,
                 "La tapa " + i + " no puede entrar: su taza compañera no está en la torre.",
                 "No se puede añadir", JOptionPane.ERROR_MESSAGE);
-            return;
+                return;
+            }
         }
         boolean cabeEnCup = false;
         for (Cup c : cups) {
@@ -390,10 +399,12 @@ public class Tower {
         if (!cabeEnCup) {
             int alturaProyeccion = alturaTotalPixelsCups + nueva.getHeight();
             if (alturaProyeccion > maxHeight * 40) {
-                if (visible) JOptionPane.showMessageDialog(null,
+                if (visible){
+                    JOptionPane.showMessageDialog(null,
                     "La tapa supera la altura de la torre.",
                     "No se puede añadir", JOptionPane.ERROR_MESSAGE);
-                return;
+                    return;
+                }
             }
             alturaTotalPixelsCups += nueva.getHeight();
         }
@@ -413,17 +424,21 @@ public class Tower {
     public void popLid() {
         ok = false;
         if (lids.isEmpty()) {
-            if (visible) JOptionPane.showMessageDialog(null,
+            if (visible){
+                JOptionPane.showMessageDialog(null,
                 "No es posible hacer pop cuando no hay tapas.",
                 "No hay tapas en la torre.", JOptionPane.ERROR_MESSAGE);
-            return;
+                return;
+            }
         }
         Lid l = lids.peek();
         if (!l.canBeRemoved(this)) {
-            if (visible) JOptionPane.showMessageDialog(null,
+            if (visible){
+                JOptionPane.showMessageDialog(null,
                 "Esta tapa no puede ser eliminada.",
                 "No se puede quitar", JOptionPane.ERROR_MESSAGE);
-            return;
+                return;
+            }
         }
         lids.pop();
         pushOrder.remove(l);
@@ -451,10 +466,12 @@ public class Tower {
                 if (!l.canBeRemoved(this)) {
                     temp.push(l);
                     while (!temp.isEmpty()) lids.push(temp.pop());
-                    if (visible) JOptionPane.showMessageDialog(null,
+                    if (visible){
+                        JOptionPane.showMessageDialog(null,
                         "Esta tapa no puede ser eliminada.",
                         "No se puede quitar", JOptionPane.ERROR_MESSAGE);
-                    return;
+                        return;
+                    }
                 }
                 alturaLid = l.getHeight();
                 l.makeInvisible();

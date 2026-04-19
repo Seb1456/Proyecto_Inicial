@@ -59,7 +59,8 @@ public class HierarchicalCup extends Cup {
      */
     @Override
     public boolean canBeRemoved(Tower tower) {
-        if (tower.cups.isEmpty()) return true;
-        return tower.cups.get(0).getNumber() != this.getNumber();
+        if (tower.cups.isEmpty()){
+            return tower.cups.get(0).getNumber() != this.getNumber();
+        }
     }
 }
